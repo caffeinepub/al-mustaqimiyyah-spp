@@ -1,110 +1,132 @@
-import { ReactNode, useState } from 'react';
-import { useNavigate, useRouterState } from '@tanstack/react-router';
-import {
-    SidebarProvider,
-    Sidebar,
-    SidebarContent,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuItem,
-    SidebarMenuButton,
-    SidebarFooter,
-    SidebarTrigger,
-    SidebarInset,
-} from '@/components/ui/sidebar';
-import { LayoutDashboard, Users, CreditCard, Calendar, FileText, Settings, Menu } from 'lucide-react';
+import { ReactNode } from 'react';
+import { Link, useNavigate, useLocation } from '@tanstack/react-router';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { 
+    LayoutDashboard, 
+    Users, 
+    DollarSign, 
+    Calendar, 
+    FileText, 
+    Settings, 
+    Menu,
+    Heart
+} from 'lucide-react';
 import LoginButton from '../auth/LoginButton';
 import ThemeToggle from '../theme/ThemeToggle';
-import { useGetCallerUserProfile } from '../../hooks/useCurrentUser';
-import { AppRole } from '../../backend';
-import { SiCoffeescript } from 'react-icons/si';
 
 interface AdminLayoutProps {
     children: ReactNode;
 }
 
+const navigation = [
+    { name: 'Dasbor', href: '/', icon: LayoutDashboard },
+    { name: 'Santri', href: '/students', icon: Users },
+    { name: 'Pembayaran', href: '/payments', icon: DollarSign },
+    { name: 'Kalender', href: '/calendar', icon: Calendar },
+    { name: 'Laporan', href: '/reports', icon: FileText },
+    { name: 'Pengaturan', href: '/settings', icon: Settings },
+];
+
 export default function AdminLayout({ children }: AdminLayoutProps) {
     const navigate = useNavigate();
-    const routerState = useRouterState();
-    const currentPath = routerState.location.pathname;
-    const { data: userProfile } = useGetCallerUserProfile();
+    const location = useLocation();
 
-    const menuItems = [
-        { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-        { icon: Users, label: 'Students', path: '/students' },
-        { icon: CreditCard, label: 'Payments', path: '/payments' },
-        { icon: Calendar, label: 'Calendar', path: '/calendar' },
-        { icon: FileText, label: 'Reports', path: '/reports' },
-        { icon: Settings, label: 'SPP Settings', path: '/settings/spp' },
-    ];
+    const NavLinks = () => (
+        <>
+            {navigation.map((item) => {
+                const isActive = location.pathname === item.href || 
+                    (item.href !== '/' && location.pathname.startsWith(item.href));
+                return (
+                    <Button
+                        key={item.name}
+                        variant={isActive ? 'secondary' : 'ghost'}
+                        className="w-full justify-start"
+                        onClick={() => navigate({ to: item.href })}
+                    >
+                        <item.icon className="mr-2 h-4 w-4" />
+                        {item.name}
+                    </Button>
+                );
+            })}
+        </>
+    );
 
     return (
-        <SidebarProvider>
-            <div className="flex min-h-screen w-full">
-                <Sidebar>
-                    <SidebarHeader className="border-b border-sidebar-border p-4">
-                        <div className="flex items-center gap-2">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                                <SiCoffeescript className="h-6 w-6" />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="text-sm font-semibold">Al-Mustaqimiyyah</span>
-                                <span className="text-xs text-muted-foreground">SPP Management</span>
-                            </div>
-                        </div>
-                    </SidebarHeader>
-                    <SidebarContent>
-                        <SidebarMenu className="p-2">
-                            {menuItems.map((item) => (
-                                <SidebarMenuItem key={item.path}>
-                                    <SidebarMenuButton
-                                        onClick={() => navigate({ to: item.path })}
-                                        isActive={currentPath === item.path}
-                                        className="w-full"
-                                    >
-                                        <item.icon className="h-4 w-4" />
-                                        <span>{item.label}</span>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
-                    </SidebarContent>
-                    <SidebarFooter className="border-t border-sidebar-border p-4">
-                        {userProfile && (
-                            <div className="mb-3 text-xs text-muted-foreground">
-                                <div className="font-medium text-foreground">{userProfile.name}</div>
-                                <div className="capitalize">{userProfile.role.replace(/([A-Z])/g, ' $1').trim()}</div>
-                            </div>
-                        )}
-                        <div className="flex items-center gap-2">
-                            <ThemeToggle />
-                            <LoginButton />
-                        </div>
-                    </SidebarFooter>
-                </Sidebar>
-                <SidebarInset className="flex-1">
-                    <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
-                        <SidebarTrigger />
-                        <div className="flex-1" />
-                    </header>
-                    <main className="flex-1 p-6">{children}</main>
-                    <footer className="border-t bg-muted/30 px-6 py-4 text-center text-sm text-muted-foreground">
-                        <p>
-                            © {new Date().getFullYear()} Al-Mustaqimiyyah SPP Management. Built with ❤️ using{' '}
-                            <a
-                                href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(
-                                    window.location.hostname
-                                )}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="font-medium text-primary hover:underline"
-                            >
-                                caffeine.ai
-                            </a>
-                        </p>
-                    </footer>
-                </SidebarInset>
+        <div className="flex min-h-screen flex-col">
+            {/* Header */}
+            <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <div className="container flex h-16 items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        {/* Mobile menu */}
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <Button variant="ghost" size="icon" className="md:hidden">
+                                    <Menu className="h-5 w-5" />
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="left" className="w-64 p-0">
+                                <div className="flex h-16 items-center border-b px-6">
+                                    <h2 className="text-lg font-semibold">SPP Sekolah</h2>
+                                </div>
+                                <ScrollArea className="h-[calc(100vh-4rem)] px-4 py-6">
+                                    <nav className="flex flex-col gap-2">
+                                        <NavLinks />
+                                    </nav>
+                                </ScrollArea>
+                            </SheetContent>
+                        </Sheet>
+
+                        <Link to="/" className="flex items-center space-x-2">
+                            <span className="text-xl font-bold">SPP Sekolah</span>
+                        </Link>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <ThemeToggle />
+                        <LoginButton />
+                    </div>
+                </div>
+            </header>
+
+            <div className="flex flex-1">
+                {/* Sidebar - Desktop */}
+                <aside className="hidden w-64 border-r bg-muted/10 md:block">
+                    <ScrollArea className="h-[calc(100vh-4rem)] px-4 py-6">
+                        <nav className="flex flex-col gap-2">
+                            <NavLinks />
+                        </nav>
+                    </ScrollArea>
+                </aside>
+
+                {/* Main content */}
+                <main className="flex-1">
+                    <div className="container py-6">
+                        {children}
+                    </div>
+                </main>
             </div>
-        </SidebarProvider>
+
+            {/* Footer */}
+            <footer className="border-t bg-muted/30 py-6">
+                <div className="container text-center text-sm text-muted-foreground">
+                    <p>
+                        © {new Date().getFullYear()} SPP Sekolah. Dibuat dengan{' '}
+                        <Heart className="inline h-4 w-4 text-red-500 fill-red-500" /> menggunakan{' '}
+                        <a
+                            href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(
+                                typeof window !== 'undefined' ? window.location.hostname : 'spp-sekolah'
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-medium underline underline-offset-4 hover:text-primary"
+                        >
+                            caffeine.ai
+                        </a>
+                    </p>
+                </div>
+            </footer>
+        </div>
     );
 }

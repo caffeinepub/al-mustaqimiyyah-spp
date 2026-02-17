@@ -44,7 +44,7 @@ export function useAddStudent() {
             guardianPhone: string;
             enrollmentDate: bigint;
         }) => {
-            if (!actor) throw new Error('Actor not available');
+            if (!actor) throw new Error('Actor tidak tersedia');
             return actor.addStudent(
                 data.nis,
                 data.classNumber,
@@ -75,7 +75,7 @@ export function useUpdateStudent() {
             guardianName: string;
             guardianPhone: string;
         }) => {
-            if (!actor) throw new Error('Actor not available');
+            if (!actor) throw new Error('Actor tidak tersedia');
             return actor.updateStudent(
                 data.nis,
                 data.classNumber,
@@ -97,7 +97,7 @@ export function useUpdateStudentStatus() {
 
     return useMutation({
         mutationFn: async (data: { nis: string; status: StatusSantri }) => {
-            if (!actor) throw new Error('Actor not available');
+            if (!actor) throw new Error('Actor tidak tersedia');
             return actor.updateStudentStatus(data.nis, data.status);
         },
         onSuccess: (_, variables) => {
@@ -113,7 +113,7 @@ export function useDeleteStudent() {
 
     return useMutation({
         mutationFn: async (nis: string) => {
-            if (!actor) throw new Error('Actor not available');
+            if (!actor) throw new Error('Actor tidak tersedia');
             return actor.deleteStudent(nis);
         },
         onSuccess: () => {
@@ -178,7 +178,7 @@ export function useCreateSppSetting() {
             notes: string;
             institutionId: bigint;
         }) => {
-            if (!actor) throw new Error('Actor not available');
+            if (!actor) throw new Error('Actor tidak tersedia');
             return actor.createSppSetting(
                 data.amount,
                 data.brand,
@@ -201,7 +201,7 @@ export function useUpdateSppSetting() {
 
     return useMutation({
         mutationFn: async (data: { id: bigint; amount: bigint; brand: string; notes: string }) => {
-            if (!actor) throw new Error('Actor not available');
+            if (!actor) throw new Error('Actor tidak tersedia');
             return actor.updateSppSetting(data.id, data.amount, data.brand, data.notes);
         },
         onSuccess: () => {
@@ -216,7 +216,7 @@ export function useDeleteSppSetting() {
 
     return useMutation({
         mutationFn: async (id: bigint) => {
-            if (!actor) throw new Error('Actor not available');
+            if (!actor) throw new Error('Actor tidak tersedia');
             return actor.deleteSppSetting(id);
         },
         onSuccess: () => {
@@ -258,7 +258,7 @@ export function useCreatePayment() {
 
     return useMutation({
         mutationFn: async (request: CreatePaymentRequest) => {
-            if (!actor) throw new Error('Actor not available');
+            if (!actor) throw new Error('Actor tidak tersedia');
             return actor.createPayment(request);
         },
         onSuccess: () => {
@@ -282,7 +282,7 @@ export function useUpdatePayment() {
             paymentMethod: any;
             notes: string;
         }) => {
-            if (!actor) throw new Error('Actor not available');
+            if (!actor) throw new Error('Actor tidak tersedia');
             return actor.updatePayment(data.id, data.amount, data.date, data.paymentMethod, data.notes);
         },
         onSuccess: (_, variables) => {
@@ -301,7 +301,7 @@ export function useDeletePayment() {
 
     return useMutation({
         mutationFn: async (id: bigint) => {
-            if (!actor) throw new Error('Actor not available');
+            if (!actor) throw new Error('Actor tidak tersedia');
             return actor.deletePayment(id);
         },
         onSuccess: () => {

@@ -1,15 +1,18 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
+  "projectStateVersion": 5,
   "summary": "Web app Sistem Manajemen Pembayaran SPP Sekolah (multi-lembaga SMP/SMA) dengan UI modern ERP-like, dashboard statistik, manajemen siswa, tagihan bulanan/tahun ajaran, pembayaran + upload bukti, tunggakan otomatis, kalender, laporan ekspor, serta role-based access. Disetujui menggunakan stack Caffeine: Backend Motoko + Frontend React+TypeScript + penyimpanan data/file di canister, impor/ekspor Excel/PDF dilakukan di sisi frontend (browser).",
   "architectural_notes": [
     "Stack disetujui: Backend Motoko (Internet Computer) + Frontend React + TypeScript; data disimpan di canister (bukan PostgreSQL/Prisma/Express).",
     "Upload bukti pembayaran (gambar) disimpan di canister.",
     "Import/Export Excel & PDF disetujui dilakukan sepenuhnya di sisi frontend (browser) tanpa server eksternal.",
-    "Autentikasi berbasis JWT diminta dalam spesifikasi awal; perlu pemetaan implementasi ke mekanisme auth yang sesuai di stack IC/Caffeine."
+    "Autentikasi berbasis JWT diminta dalam spesifikasi awal; perlu pemetaan implementasi ke mekanisme auth yang sesuai di stack IC/Caffeine.",
+    "Perlu strategi i18n/lokalisasi untuk memastikan seluruh UI konsisten Bahasa Indonesia (termasuk format tanggal dan mata uang)."
   ],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Build/deploy otomatis gagal beberapa kali saat mencoba menerapkan perubahan (error dari sistem build AI)."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-implement-a-modern-professional-erp-like-admin-ui-theme-across-the-app-primary-colors-navy-emerald-green-clean-cards-and-tables-sidebar-navigation-responsive-layout-desktop-mobile-admin-modern-font-inter-or-poppins-and-optional-dark-mode",
@@ -114,6 +117,22 @@
         "REQ-13"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-localize-the-entire-frontend-ui-to-indonesian-bahasa-indonesia-and-remove-remaining-english-text-across-navigation-page-titles-form-labels-placeholders-buttons-table-headers-badges-dialogs-toasts-empty-loading-states-and-validation-messages-also-localize-date-and-currency-formatting-to-indonesian-conventions-locale-id-id-currency-idr-where-applicable",
+      "title": "Localize the entire frontend UI to Indonesian (Bahasa Indonesia) and remove remaining English text across navigation, page titles, form labels, placeholders, buttons, table headers, badges, dialogs, toasts, empty/loading states, and validation messages; also localize date and currency formatting to Indonesian conventions (locale id-ID, currency IDR where applicable).",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-every-institution-lembaga-dropdown-and-filter-in-the-frontend-correctly-loads-and-displays-the-available-institutions-smp-sma-with-clear-indonesian-labels-including-profilesetupmodal-and-student-create-edit-forms-handle-loading-and-error-states-so-the-dropdown-never-appears-silently-empty",
+      "title": "Ensure every Institution/Lembaga dropdown and filter in the frontend correctly loads and displays the available institutions (SMP & SMA) with clear Indonesian labels, including ProfileSetupModal and Student create/edit forms; handle loading and error states so the dropdown never appears silently empty.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -182,6 +201,26 @@
       "summary": "Design and implement backend data models and persistence in a single Motoko actor for: institutions, students, SPP settings, bills, payments, and users; include query/update methods needed by the frontend, with role/institution access checks in backend methods.",
       "reqIds": [
         "REQ-14"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "Lokalisasi penuh UI ke Bahasa Indonesia (semua label, menu, form, validasi, tanggal/mata uang) dan hilangkan sisa teks Bahasa Inggris",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Perbaiki dropdown 'Lembaga' agar terisi dan menampilkan opsi SMP & SMA (dua institusi predefined) secara konsisten di seluruh form/filter",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-27",
+      "summary": "Fix institution listing so the Institution dropdown can reliably show the two predefined institutions (SMP and SMA) even when the authenticated user does not yet have a user profile, and ensure the backend always has the two predefined institutions available.",
+      "reqIds": [
+        "REQ-15"
       ],
       "status": "pending"
     }

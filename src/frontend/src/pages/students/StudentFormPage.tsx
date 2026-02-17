@@ -17,7 +17,7 @@ export default function StudentFormPage({ mode }: StudentFormPageProps) {
     const { nis } = useParams({ strict: false }) as { nis?: string };
     const navigate = useNavigate();
     const { data: student } = useGetStudent(nis || '');
-    const { data: institutions = [] } = useListInstitutions();
+    const { data: institutions = [], isLoading: institutionsLoading, isError: institutionsError } = useListInstitutions();
     const addMutation = useAddStudent();
     const updateMutation = useUpdateStudent();
 
@@ -62,7 +62,7 @@ export default function StudentFormPage({ mode }: StudentFormPageProps) {
                     guardianPhone: formData.guardianPhone,
                     enrollmentDate: BigInt(new Date(formData.enrollmentDate).getTime() * 1000000),
                 });
-                toast.success('Student created successfully');
+                toast.success('Santri berhasil ditambahkan');
             } else {
                 await updateMutation.mutateAsync({
                     nis: formData.nis,
@@ -71,11 +71,11 @@ export default function StudentFormPage({ mode }: StudentFormPageProps) {
                     guardianName: formData.guardianName,
                     guardianPhone: formData.guardianPhone,
                 });
-                toast.success('Student updated successfully');
+                toast.success('Santri berhasil diperbarui');
             }
             navigate({ to: '/students' });
         } catch (error: any) {
-            toast.error(error.message || `Failed to ${mode} student`);
+            toast.error(error.message || `Gagal ${mode === 'create' ? 'menambahkan' : 'memperbarui'} santri`);
         }
     };
 
@@ -87,14 +87,14 @@ export default function StudentFormPage({ mode }: StudentFormPageProps) {
                 </Button>
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">
-                        {mode === 'create' ? 'Add New Student' : 'Edit Student'}
+                        {mode === 'create' ? 'Tambah Santri Baru' : 'Edit Santri'}
                     </h1>
                 </div>
             </div>
 
             <Card className="max-w-2xl">
                 <CardHeader>
-                    <CardTitle>Student Information</CardTitle>
+                    <CardTitle>Informasi Santri</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -110,7 +110,7 @@ export default function StudentFormPage({ mode }: StudentFormPageProps) {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="noInduk">Student ID *</Label>
+                                <Label htmlFor="noInduk">No. Induk *</Label>
                                 <Input
                                     id="noInduk"
                                     value={formData.noInduk}
@@ -122,7 +122,7 @@ export default function StudentFormPage({ mode }: StudentFormPageProps) {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="fullName">Full Name *</Label>
+                            <Label htmlFor="fullName">Nama Lengkap *</Label>
                             <Input
                                 id="fullName"
                                 value={formData.fullName}
@@ -133,7 +133,7 @@ export default function StudentFormPage({ mode }: StudentFormPageProps) {
 
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-2">
-                                <Label htmlFor="classNumber">Class *</Label>
+                                <Label htmlFor="classNumber">Nomor Kelas *</Label>
                                 <Input
                                     id="classNumber"
                                     type="number"
@@ -142,29 +142,47 @@ export default function StudentFormPage({ mode }: StudentFormPageProps) {
                                     required
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="institution">Institution *</Label>
-                                <Select
-                                    value={formData.institutionId}
-                                    onValueChange={(value) => setFormData({ ...formData, institutionId: value })}
-                                    disabled={mode === 'edit'}
-                                >
-                                    <SelectTrigger id="institution">
-                                        <SelectValue placeholder="Select institution" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {institutions.map((inst) => (
-                                            <SelectItem key={inst.id.toString()} value={inst.id.toString()}>
-                                                {inst.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            {mode === 'create' && (
+                                <div className="space-y-2">
+                                    <Label htmlFor="institution">Lembaga *</Label>
+                                    <Select 
+                                        value={formData.institutionId} 
+                                        onValueChange={(value) => setFormData({ ...formData, institutionId: value })}
+                                        disabled={institutionsLoading || institutionsError}
+                                    >
+                                        <SelectTrigger id="institution">
+                                            <SelectValue 
+                                                placeholder={
+                                                    institutionsLoading 
+                                                        ? "Memuat data lembaga..." 
+                                                        : institutionsError 
+                                                            ? "Gagal memuat lembaga" 
+                                                            : institutions.length === 0
+                                                                ? "Tidak ada lembaga tersedia"
+                                                                : "Pilih lembaga"
+                                                } 
+                                            />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {institutions.map((inst) => (
+                                                <SelectItem key={inst.id.toString()} value={inst.id.toString()}>
+                                                    {inst.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {institutionsError && (
+                                        <p className="text-sm text-destructive">Gagal memuat data lembaga. Silakan coba lagi.</p>
+                                    )}
+                                    {!institutionsLoading && !institutionsError && institutions.length === 0 && (
+                                        <p className="text-sm text-muted-foreground">Tidak ada lembaga yang tersedia saat ini.</p>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="guardianName">Guardian Name *</Label>
+                            <Label htmlFor="guardianName">Nama Wali *</Label>
                             <Input
                                 id="guardianName"
                                 value={formData.guardianName}
@@ -174,9 +192,10 @@ export default function StudentFormPage({ mode }: StudentFormPageProps) {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="guardianPhone">Guardian Phone *</Label>
+                            <Label htmlFor="guardianPhone">Telepon Wali *</Label>
                             <Input
                                 id="guardianPhone"
+                                type="tel"
                                 value={formData.guardianPhone}
                                 onChange={(e) => setFormData({ ...formData, guardianPhone: e.target.value })}
                                 required
@@ -185,7 +204,7 @@ export default function StudentFormPage({ mode }: StudentFormPageProps) {
 
                         {mode === 'create' && (
                             <div className="space-y-2">
-                                <Label htmlFor="enrollmentDate">Enrollment Date *</Label>
+                                <Label htmlFor="enrollmentDate">Tanggal Masuk *</Label>
                                 <Input
                                     id="enrollmentDate"
                                     type="date"
@@ -198,10 +217,10 @@ export default function StudentFormPage({ mode }: StudentFormPageProps) {
 
                         <div className="flex gap-2 pt-4">
                             <Button type="submit" disabled={addMutation.isPending || updateMutation.isPending}>
-                                {addMutation.isPending || updateMutation.isPending ? 'Saving...' : 'Save'}
+                                {addMutation.isPending || updateMutation.isPending ? 'Menyimpan...' : 'Simpan'}
                             </Button>
                             <Button type="button" variant="outline" onClick={() => navigate({ to: '/students' })}>
-                                Cancel
+                                Batal
                             </Button>
                         </div>
                     </form>

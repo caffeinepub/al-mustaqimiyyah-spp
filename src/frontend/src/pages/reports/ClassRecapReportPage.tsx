@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, FileSpreadsheet } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, Download, Printer } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 
 export default function ClassRecapReportPage() {
@@ -14,29 +14,29 @@ export default function ClassRecapReportPage() {
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Class Recap</h1>
-                        <p className="text-muted-foreground">Payment summary by class</p>
+                        <h1 className="text-3xl font-bold tracking-tight">Rekap Per Kelas</h1>
+                        <p className="text-muted-foreground">Laporan pembayaran per kelas</p>
                     </div>
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline">
-                        <FileSpreadsheet className="mr-2 h-4 w-4" />
-                        Export Excel
+                        <Printer className="mr-2 h-4 w-4" />
+                        Cetak
                     </Button>
                     <Button variant="outline">
                         <Download className="mr-2 h-4 w-4" />
-                        Export PDF
+                        Ekspor Excel
                     </Button>
                 </div>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Report Data</CardTitle>
+                    <CardTitle>Laporan Rekap Per Kelas</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="text-center py-12 text-muted-foreground">
-                        <p>Class recap report coming soon</p>
+                        Fitur laporan rekap per kelas akan segera tersedia
                     </div>
                 </CardContent>
             </Card>

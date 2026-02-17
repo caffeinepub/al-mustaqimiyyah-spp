@@ -13,14 +13,14 @@ import { toast } from 'sonner';
 export default function ProfileSetupModal() {
     const { actor } = useActor();
     const queryClient = useQueryClient();
-    const { data: institutions = [] } = useListInstitutions();
+    const { data: institutions = [], isLoading: institutionsLoading, isError: institutionsError } = useListInstitutions();
     const [name, setName] = useState('');
     const [role, setRole] = useState<AppRole>(AppRole.treasurer);
     const [institutionId, setInstitutionId] = useState<string>('');
 
     const saveMutation = useMutation({
         mutationFn: async () => {
-            if (!actor) throw new Error('Actor not available');
+            if (!actor) throw new Error('Actor tidak tersedia');
             const profile = {
                 name,
                 role,
@@ -30,21 +30,21 @@ export default function ProfileSetupModal() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
-            toast.success('Profile created successfully');
+            toast.success('Profil berhasil dibuat');
         },
         onError: (error: any) => {
-            toast.error(error.message || 'Failed to create profile');
+            toast.error(error.message || 'Gagal membuat profil');
         },
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!name.trim()) {
-            toast.error('Please enter your name');
+            toast.error('Silakan masukkan nama Anda');
             return;
         }
         if (role !== AppRole.superAdmin && !institutionId) {
-            toast.error('Please select an institution');
+            toast.error('Silakan pilih lembaga');
             return;
         }
         saveMutation.mutate();
@@ -54,40 +54,54 @@ export default function ProfileSetupModal() {
         <Dialog open={true}>
             <DialogContent className="sm:max-w-md" onPointerDownOutside={(e) => e.preventDefault()}>
                 <DialogHeader>
-                    <DialogTitle>Welcome! Set Up Your Profile</DialogTitle>
-                    <DialogDescription>Please provide your name and role to continue.</DialogDescription>
+                    <DialogTitle>Selamat Datang! Atur Profil Anda</DialogTitle>
+                    <DialogDescription>Silakan masukkan nama dan peran Anda untuk melanjutkan.</DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="name">Full Name</Label>
+                        <Label htmlFor="name">Nama Lengkap</Label>
                         <Input
                             id="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="Enter your full name"
+                            placeholder="Masukkan nama lengkap Anda"
                             required
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="role">Role</Label>
+                        <Label htmlFor="role">Peran</Label>
                         <Select value={role} onValueChange={(value) => setRole(value as AppRole)}>
                             <SelectTrigger id="role">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value={AppRole.superAdmin}>Super Admin</SelectItem>
-                                <SelectItem value={AppRole.smpAdmin}>SMP Admin</SelectItem>
-                                <SelectItem value={AppRole.smaAdmin}>SMA Admin</SelectItem>
-                                <SelectItem value={AppRole.treasurer}>Treasurer</SelectItem>
+                                <SelectItem value={AppRole.smpAdmin}>Admin SMP</SelectItem>
+                                <SelectItem value={AppRole.smaAdmin}>Admin SMA</SelectItem>
+                                <SelectItem value={AppRole.treasurer}>Bendahara</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
                     {role !== AppRole.superAdmin && (
                         <div className="space-y-2">
-                            <Label htmlFor="institution">Institution</Label>
-                            <Select value={institutionId} onValueChange={setInstitutionId}>
+                            <Label htmlFor="institution">Lembaga</Label>
+                            <Select 
+                                value={institutionId} 
+                                onValueChange={setInstitutionId}
+                                disabled={institutionsLoading || institutionsError}
+                            >
                                 <SelectTrigger id="institution">
-                                    <SelectValue placeholder="Select institution" />
+                                    <SelectValue 
+                                        placeholder={
+                                            institutionsLoading 
+                                                ? "Memuat data lembaga..." 
+                                                : institutionsError 
+                                                    ? "Gagal memuat lembaga" 
+                                                    : institutions.length === 0
+                                                        ? "Tidak ada lembaga tersedia"
+                                                        : "Pilih lembaga"
+                                        } 
+                                    />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {institutions.map((inst) => (
@@ -97,10 +111,16 @@ export default function ProfileSetupModal() {
                                     ))}
                                 </SelectContent>
                             </Select>
+                            {institutionsError && (
+                                <p className="text-sm text-destructive">Gagal memuat data lembaga. Silakan coba lagi.</p>
+                            )}
+                            {!institutionsLoading && !institutionsError && institutions.length === 0 && (
+                                <p className="text-sm text-muted-foreground">Tidak ada lembaga yang tersedia saat ini.</p>
+                            )}
                         </div>
                     )}
                     <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
-                        {saveMutation.isPending ? 'Saving...' : 'Continue'}
+                        {saveMutation.isPending ? 'Menyimpan...' : 'Lanjutkan'}
                     </Button>
                 </form>
             </DialogContent>

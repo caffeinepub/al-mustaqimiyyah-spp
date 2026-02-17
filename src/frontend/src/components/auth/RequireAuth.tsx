@@ -12,7 +12,7 @@ export default function RequireAuth({ children }: { children: ReactNode }) {
             <div className="flex items-center justify-center min-h-screen bg-background">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                    <p className="text-muted-foreground">Loading...</p>
+                    <p className="text-muted-foreground">Memuat...</p>
                 </div>
             </div>
         );
@@ -26,8 +26,10 @@ export default function RequireAuth({ children }: { children: ReactNode }) {
                         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
                             <Lock className="h-6 w-6 text-primary" />
                         </div>
-                        <CardTitle>Authentication Required</CardTitle>
-                        <CardDescription>Please sign in to access the SPP Management System</CardDescription>
+                        <CardTitle>Autentikasi Diperlukan</CardTitle>
+                        <CardDescription>
+                            Silakan masuk untuk mengakses Sistem Manajemen SPP
+                        </CardDescription>
                     </CardHeader>
                     <CardContent className="flex justify-center">
                         <LoginButton />

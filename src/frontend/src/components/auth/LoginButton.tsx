@@ -10,7 +10,7 @@ export default function LoginButton() {
 
     const isAuthenticated = !!identity;
     const disabled = loginStatus === 'logging-in';
-    const text = loginStatus === 'logging-in' ? 'Logging in...' : isAuthenticated ? 'Logout' : 'Login';
+    const text = loginStatus === 'logging-in' ? 'Masuk...' : isAuthenticated ? 'Keluar' : 'Masuk';
 
     const handleAuth = async () => {
         if (isAuthenticated) {

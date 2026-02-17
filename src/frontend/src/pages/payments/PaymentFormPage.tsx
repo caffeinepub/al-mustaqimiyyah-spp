@@ -27,7 +27,7 @@ export default function PaymentFormPage({ mode }: PaymentFormPageProps) {
     const navigate = useNavigate();
     const { data: payment } = useGetPayment(id ? BigInt(id) : BigInt(0));
     const { data: students = [] } = useListStudents();
-    const { data: institutions = [] } = useListInstitutions();
+    const { data: institutions = [], isLoading: institutionsLoading, isError: institutionsError } = useListInstitutions();
     const createMutation = useCreatePayment();
     const updateMutation = useUpdatePayment();
 
@@ -72,7 +72,7 @@ export default function PaymentFormPage({ mode }: PaymentFormPageProps) {
                     notes: formData.notes,
                     institutionId: BigInt(formData.institutionId),
                 });
-                toast.success('Payment recorded successfully');
+                toast.success('Pembayaran berhasil dicatat');
             } else if (id) {
                 await updateMutation.mutateAsync({
                     id: BigInt(id),
@@ -81,11 +81,11 @@ export default function PaymentFormPage({ mode }: PaymentFormPageProps) {
                     paymentMethod: formData.paymentMethod,
                     notes: formData.notes,
                 });
-                toast.success('Payment updated successfully');
+                toast.success('Pembayaran berhasil diperbarui');
             }
             navigate({ to: '/payments' });
         } catch (error: any) {
-            toast.error(error.message || `Failed to ${mode} payment`);
+            toast.error(error.message || `Gagal ${mode === 'create' ? 'mencatat' : 'memperbarui'} pembayaran`);
         }
     };
 
@@ -97,21 +97,21 @@ export default function PaymentFormPage({ mode }: PaymentFormPageProps) {
                 </Button>
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">
-                        {mode === 'create' ? 'Record New Payment' : 'Edit Payment'}
+                        {mode === 'create' ? 'Catat Pembayaran Baru' : 'Edit Pembayaran'}
                     </h1>
                 </div>
             </div>
 
             <Card className="max-w-2xl">
                 <CardHeader>
-                    <CardTitle>Payment Information</CardTitle>
+                    <CardTitle>Informasi Pembayaran</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {mode === 'create' && (
                             <>
                                 <div className="space-y-2">
-                                    <Label htmlFor="student">Student *</Label>
+                                    <Label htmlFor="student">Santri *</Label>
                                     <Select
                                         value={formData.studentNis}
                                         onValueChange={(value) => {
@@ -124,7 +124,7 @@ export default function PaymentFormPage({ mode }: PaymentFormPageProps) {
                                         }}
                                     >
                                         <SelectTrigger id="student">
-                                            <SelectValue placeholder="Select student" />
+                                            <SelectValue placeholder="Pilih santri" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {students.map((student) => (
@@ -137,10 +137,24 @@ export default function PaymentFormPage({ mode }: PaymentFormPageProps) {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="institution">Institution *</Label>
-                                    <Select value={formData.institutionId} onValueChange={(value) => setFormData({ ...formData, institutionId: value })}>
+                                    <Label htmlFor="institution">Lembaga *</Label>
+                                    <Select 
+                                        value={formData.institutionId} 
+                                        onValueChange={(value) => setFormData({ ...formData, institutionId: value })}
+                                        disabled={institutionsLoading || institutionsError}
+                                    >
                                         <SelectTrigger id="institution">
-                                            <SelectValue placeholder="Select institution" />
+                                            <SelectValue 
+                                                placeholder={
+                                                    institutionsLoading 
+                                                        ? "Memuat data lembaga..." 
+                                                        : institutionsError 
+                                                            ? "Gagal memuat lembaga" 
+                                                            : institutions.length === 0
+                                                                ? "Tidak ada lembaga tersedia"
+                                                                : "Pilih lembaga"
+                                                } 
+                                            />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {institutions.map((inst) => (
@@ -150,24 +164,30 @@ export default function PaymentFormPage({ mode }: PaymentFormPageProps) {
                                             ))}
                                         </SelectContent>
                                     </Select>
+                                    {institutionsError && (
+                                        <p className="text-sm text-destructive">Gagal memuat data lembaga. Silakan coba lagi.</p>
+                                    )}
+                                    {!institutionsLoading && !institutionsError && institutions.length === 0 && (
+                                        <p className="text-sm text-muted-foreground">Tidak ada lembaga yang tersedia saat ini.</p>
+                                    )}
                                 </div>
                             </>
                         )}
 
                         <div className="space-y-2">
-                            <Label htmlFor="brand">Brand/Month *</Label>
+                            <Label htmlFor="brand">Brand/Bulan *</Label>
                             <Input
                                 id="brand"
                                 value={formData.brand}
                                 onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                                placeholder="e.g., January 2024"
+                                placeholder="contoh: Januari 2024"
                                 required
                             />
                         </div>
 
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-2">
-                                <Label htmlFor="amount">Amount (IDR) *</Label>
+                                <Label htmlFor="amount">Jumlah (IDR) *</Label>
                                 <Input
                                     id="amount"
                                     type="number"
@@ -177,7 +197,7 @@ export default function PaymentFormPage({ mode }: PaymentFormPageProps) {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="date">Payment Date *</Label>
+                                <Label htmlFor="date">Tanggal Pembayaran *</Label>
                                 <Input
                                     id="date"
                                     type="date"
@@ -189,7 +209,7 @@ export default function PaymentFormPage({ mode }: PaymentFormPageProps) {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="paymentMethod">Payment Method *</Label>
+                            <Label htmlFor="paymentMethod">Metode Pembayaran *</Label>
                             <Select
                                 value={formData.paymentMethod}
                                 onValueChange={(value) => setFormData({ ...formData, paymentMethod: value as PaymentMethod })}
@@ -198,14 +218,14 @@ export default function PaymentFormPage({ mode }: PaymentFormPageProps) {
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value={PaymentMethod.cash}>Cash</SelectItem>
+                                    <SelectItem value={PaymentMethod.cash}>Tunai</SelectItem>
                                     <SelectItem value={PaymentMethod.transfer}>Transfer</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="notes">Notes</Label>
+                            <Label htmlFor="notes">Catatan</Label>
                             <Textarea
                                 id="notes"
                                 value={formData.notes}
@@ -216,10 +236,10 @@ export default function PaymentFormPage({ mode }: PaymentFormPageProps) {
 
                         <div className="flex gap-2 pt-4">
                             <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
-                                {createMutation.isPending || updateMutation.isPending ? 'Saving...' : 'Save'}
+                                {createMutation.isPending || updateMutation.isPending ? 'Menyimpan...' : 'Simpan'}
                             </Button>
                             <Button type="button" variant="outline" onClick={() => navigate({ to: '/payments' })}>
-                                Cancel
+                                Batal
                             </Button>
                         </div>
                     </form>

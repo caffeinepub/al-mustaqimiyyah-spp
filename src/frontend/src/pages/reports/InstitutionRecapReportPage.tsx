@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, FileSpreadsheet } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, Download, Printer } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 
 export default function InstitutionRecapReportPage() {
@@ -14,29 +14,29 @@ export default function InstitutionRecapReportPage() {
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Institution Recap</h1>
-                        <p className="text-muted-foreground">Compare SMP and SMA payments</p>
+                        <h1 className="text-3xl font-bold tracking-tight">Rekap Per Lembaga</h1>
+                        <p className="text-muted-foreground">Perbandingan pembayaran antar lembaga</p>
                     </div>
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline">
-                        <FileSpreadsheet className="mr-2 h-4 w-4" />
-                        Export Excel
+                        <Printer className="mr-2 h-4 w-4" />
+                        Cetak
                     </Button>
                     <Button variant="outline">
                         <Download className="mr-2 h-4 w-4" />
-                        Export PDF
+                        Ekspor Excel
                     </Button>
                 </div>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Report Data</CardTitle>
+                    <CardTitle>Laporan Rekap Per Lembaga</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="text-center py-12 text-muted-foreground">
-                        <p>Institution recap report coming soon</p>
+                        Fitur laporan rekap per lembaga akan segera tersedia
                     </div>
                 </CardContent>
             </Card>

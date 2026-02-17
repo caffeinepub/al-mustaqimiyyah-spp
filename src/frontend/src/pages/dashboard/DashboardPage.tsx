@@ -1,10 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useGetDashboardStats, useListPayments } from '../../hooks/useQueries';
-import { Users, DollarSign, AlertCircle, TrendingUp } from 'lucide-react';
+import { Users, DollarSign, AlertCircle } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useMemo } from 'react';
+import { formatCurrency, formatMonthYear } from '../../utils/formatters';
 
 export default function DashboardPage() {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function DashboardPage() {
             .sort(([a], [b]) => a.localeCompare(b))
             .slice(-6)
             .map(([month, amount]) => ({
-                month: new Date(month + '-01').toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+                month: formatMonthYear(new Date(month + '-01')),
                 amount: amount / 1000000,
             }));
     }, [allPayments]);
@@ -47,14 +48,14 @@ export default function DashboardPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                <p className="text-muted-foreground">Overview of SPP management system</p>
+                <h1 className="text-3xl font-bold tracking-tight">Dasbor</h1>
+                <p className="text-muted-foreground">Ringkasan sistem manajemen SPP</p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total SMP Students</CardTitle>
+                        <CardTitle className="text-sm font-medium">Total Santri SMP</CardTitle>
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -64,7 +65,7 @@ export default function DashboardPage() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total SMA Students</CardTitle>
+                        <CardTitle className="text-sm font-medium">Total Santri SMA</CardTitle>
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -74,7 +75,7 @@ export default function DashboardPage() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Payments This Month</CardTitle>
+                        <CardTitle className="text-sm font-medium">Pembayaran Bulan Ini</CardTitle>
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -84,7 +85,7 @@ export default function DashboardPage() {
 
                 <Card className="border-destructive/50">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Students in Arrears</CardTitle>
+                        <CardTitle className="text-sm font-medium">Santri Menunggak</CardTitle>
                         <AlertCircle className="h-4 w-4 text-destructive" />
                     </CardHeader>
                     <CardContent>
@@ -96,7 +97,7 @@ export default function DashboardPage() {
                             className="mt-2 h-auto p-0 text-xs"
                             onClick={() => navigate({ to: '/reports/arrears' })}
                         >
-                            View Details →
+                            Lihat Detail →
                         </Button>
                     </CardContent>
                 </Card>
@@ -105,7 +106,7 @@ export default function DashboardPage() {
             <div className="grid gap-4 md:grid-cols-2">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Payments Per Month</CardTitle>
+                        <CardTitle>Pembayaran Per Bulan</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ResponsiveContainer width="100%" height={300}>
@@ -115,7 +116,7 @@ export default function DashboardPage() {
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="amount" fill="oklch(var(--chart-1))" name="Amount (IDR Million)" />
+                                <Bar dataKey="amount" fill="oklch(var(--chart-1))" name="Jumlah (Juta IDR)" />
                             </BarChart>
                         </ResponsiveContainer>
                     </CardContent>
@@ -123,7 +124,7 @@ export default function DashboardPage() {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>SMP vs SMA Comparison</CardTitle>
+                        <CardTitle>Perbandingan SMP vs SMA</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ResponsiveContainer width="100%" height={300}>

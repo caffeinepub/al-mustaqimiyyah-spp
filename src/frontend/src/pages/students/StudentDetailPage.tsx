@@ -2,10 +2,11 @@ import { useParams, useNavigate } from '@tanstack/react-router';
 import { useGetStudent, useGetStudentPaymentHistory } from '../../hooks/useQueries';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Edit } from 'lucide-react';
-import { StatusSantri } from '../../backend';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, Edit, Phone, User } from 'lucide-react';
+import { StatusSantri } from '../../backend';
+import { formatDate, formatCurrency } from '../../utils/formatters';
 
 export default function StudentDetailPage() {
     const { nis } = useParams({ strict: false }) as { nis: string };
@@ -14,11 +15,25 @@ export default function StudentDetailPage() {
     const { data: paymentHistory = [] } = useGetStudentPaymentHistory(nis);
 
     if (isLoading) {
-        return <div className="text-center py-8">Loading...</div>;
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-muted-foreground">Memuat...</p>
+                </div>
+            </div>
+        );
     }
 
     if (!student) {
-        return <div className="text-center py-8">Student not found</div>;
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                    <p className="text-lg font-semibold mb-2">Santri tidak ditemukan</p>
+                    <Button onClick={() => navigate({ to: '/students' })}>Kembali ke Daftar Santri</Button>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -42,31 +57,35 @@ export default function StudentDetailPage() {
             <div className="grid gap-6 md:grid-cols-2">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Student Information</CardTitle>
+                        <CardTitle>Informasi Santri</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div>
-                            <div className="text-sm font-medium text-muted-foreground">Student ID</div>
-                            <div className="text-base">{student.noInduk}</div>
-                        </div>
-                        <div>
-                            <div className="text-sm font-medium text-muted-foreground">Class</div>
-                            <div className="text-base">{Number(student.classNumber)}</div>
-                        </div>
-                        <div>
-                            <div className="text-sm font-medium text-muted-foreground">Institution</div>
-                            <div className="text-base">{student.institution.name}</div>
-                        </div>
-                        <div>
-                            <div className="text-sm font-medium text-muted-foreground">Status</div>
-                            <Badge variant={student.status === StatusSantri.bersekolah ? 'default' : 'secondary'}>
-                                {student.status === StatusSantri.bersekolah ? 'Active' : 'Graduated'}
-                            </Badge>
-                        </div>
-                        <div>
-                            <div className="text-sm font-medium text-muted-foreground">Enrollment Date</div>
-                            <div className="text-base">
-                                {new Date(Number(student.enrollmentDate) / 1000000).toLocaleDateString()}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <p className="text-sm text-muted-foreground">NIS</p>
+                                <p className="font-medium">{student.nis}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">No. Induk</p>
+                                <p className="font-medium">{student.noInduk}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Kelas</p>
+                                <p className="font-medium">{Number(student.classNumber)}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Lembaga</p>
+                                <p className="font-medium">{student.institution.name}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Status</p>
+                                <Badge variant={student.status === StatusSantri.bersekolah ? 'default' : 'secondary'}>
+                                    {student.status === StatusSantri.bersekolah ? 'Aktif' : 'Lulus'}
+                                </Badge>
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Tanggal Masuk</p>
+                                <p className="font-medium">{formatDate(student.enrollmentDate)}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -74,16 +93,22 @@ export default function StudentDetailPage() {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Guardian Information</CardTitle>
+                        <CardTitle>Informasi Wali</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div>
-                            <div className="text-sm font-medium text-muted-foreground">Guardian Name</div>
-                            <div className="text-base">{student.guardianName}</div>
+                        <div className="flex items-center gap-3">
+                            <User className="h-5 w-5 text-muted-foreground" />
+                            <div>
+                                <p className="text-sm text-muted-foreground">Nama Wali</p>
+                                <p className="font-medium">{student.guardianName}</p>
+                            </div>
                         </div>
-                        <div>
-                            <div className="text-sm font-medium text-muted-foreground">Guardian Phone</div>
-                            <div className="text-base">{student.guardianPhone}</div>
+                        <div className="flex items-center gap-3">
+                            <Phone className="h-5 w-5 text-muted-foreground" />
+                            <div>
+                                <p className="text-sm text-muted-foreground">Telepon</p>
+                                <p className="font-medium">{student.guardianPhone}</p>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
@@ -91,35 +116,31 @@ export default function StudentDetailPage() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Payment History</CardTitle>
+                    <CardTitle>Riwayat Pembayaran</CardTitle>
                 </CardHeader>
                 <CardContent>
                     {paymentHistory.length === 0 ? (
-                        <div className="text-center py-8 text-muted-foreground">No payment history</div>
+                        <div className="text-center py-8 text-muted-foreground">Belum ada riwayat pembayaran</div>
                     ) : (
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Brand</TableHead>
-                                    <TableHead>Amount</TableHead>
-                                    <TableHead>Method</TableHead>
-                                    <TableHead>Notes</TableHead>
+                                    <TableHead>Tanggal</TableHead>
+                                    <TableHead>Bulan/Brand</TableHead>
+                                    <TableHead>Jumlah</TableHead>
+                                    <TableHead>Metode</TableHead>
+                                    <TableHead>Catatan</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {paymentHistory.map((payment) => (
-                                    <TableRow
-                                        key={payment.id.toString()}
-                                        className="cursor-pointer hover:bg-muted/50"
-                                        onClick={() => navigate({ to: `/payments/${payment.id}` })}
-                                    >
-                                        <TableCell>
-                                            {new Date(Number(payment.date) / 1000000).toLocaleDateString()}
-                                        </TableCell>
+                                    <TableRow key={payment.id.toString()}>
+                                        <TableCell>{formatDate(payment.date)}</TableCell>
                                         <TableCell>{payment.brand}</TableCell>
-                                        <TableCell>Rp {Number(payment.amount).toLocaleString()}</TableCell>
-                                        <TableCell className="capitalize">{payment.paymentMethod}</TableCell>
+                                        <TableCell className="font-medium">{formatCurrency(payment.amount)}</TableCell>
+                                        <TableCell className="capitalize">
+                                            {payment.paymentMethod === 'cash' ? 'Tunai' : 'Transfer'}
+                                        </TableCell>
                                         <TableCell>{payment.notes || '-'}</TableCell>
                                     </TableRow>
                                 ))}

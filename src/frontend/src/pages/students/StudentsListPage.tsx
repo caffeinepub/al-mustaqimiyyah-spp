@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useListStudents, useDeleteStudent } from '../../hooks/useQueries';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Trash2, Edit, Upload } from 'lucide-react';
@@ -39,10 +39,10 @@ export default function StudentsListPage() {
         if (!deleteNis) return;
         try {
             await deleteMutation.mutateAsync(deleteNis);
-            toast.success('Student deleted successfully');
+            toast.success('Santri berhasil dihapus');
             setDeleteNis(null);
         } catch (error: any) {
-            toast.error(error.message || 'Failed to delete student');
+            toast.error(error.message || 'Gagal menghapus santri');
         }
     };
 
@@ -50,17 +50,17 @@ export default function StudentsListPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Students</h1>
-                    <p className="text-muted-foreground">Manage student records</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Santri</h1>
+                    <p className="text-muted-foreground">Kelola data santri</p>
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline" onClick={() => navigate({ to: '/students/import' })}>
                         <Upload className="mr-2 h-4 w-4" />
-                        Import Excel
+                        Impor Excel
                     </Button>
                     <Button onClick={() => navigate({ to: '/students/new' })}>
                         <Plus className="mr-2 h-4 w-4" />
-                        Add Student
+                        Tambah Santri
                     </Button>
                 </div>
             </div>
@@ -71,7 +71,7 @@ export default function StudentsListPage() {
                         <div className="relative flex-1">
                             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                             <Input
-                                placeholder="Search by name or NIS..."
+                                placeholder="Cari berdasarkan nama atau NIS..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="pl-10"
@@ -81,20 +81,20 @@ export default function StudentsListPage() {
                 </CardHeader>
                 <CardContent>
                     {isLoading ? (
-                        <div className="text-center py-8">Loading...</div>
+                        <div className="text-center py-8">Memuat...</div>
                     ) : filteredStudents.length === 0 ? (
-                        <div className="text-center py-8 text-muted-foreground">No students found</div>
+                        <div className="text-center py-8 text-muted-foreground">Tidak ada santri ditemukan</div>
                     ) : (
                         <Table>
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>NIS</TableHead>
-                                    <TableHead>Full Name</TableHead>
-                                    <TableHead>Class</TableHead>
-                                    <TableHead>Institution</TableHead>
-                                    <TableHead>Guardian</TableHead>
+                                    <TableHead>Nama Lengkap</TableHead>
+                                    <TableHead>Kelas</TableHead>
+                                    <TableHead>Lembaga</TableHead>
+                                    <TableHead>Wali</TableHead>
                                     <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
+                                    <TableHead className="text-right">Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -111,7 +111,7 @@ export default function StudentsListPage() {
                                         <TableCell>{student.guardianName}</TableCell>
                                         <TableCell>
                                             <Badge variant={student.status === StatusSantri.bersekolah ? 'default' : 'secondary'}>
-                                                {student.status === StatusSantri.bersekolah ? 'Active' : 'Graduated'}
+                                                {student.status === StatusSantri.bersekolah ? 'Aktif' : 'Lulus'}
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-right">
@@ -143,15 +143,15 @@ export default function StudentsListPage() {
             <AlertDialog open={!!deleteNis} onOpenChange={() => setDeleteNis(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the student record.
+                            Tindakan ini tidak dapat dibatalkan. Data santri akan dihapus secara permanen.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel>Batal</AlertDialogCancel>
                         <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
-                            Delete
+                            Hapus
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

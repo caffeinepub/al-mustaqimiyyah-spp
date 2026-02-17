@@ -1,4 +1,3 @@
-import Array "mo:core/Array";
 import List "mo:core/List";
 import Order "mo:core/Order";
 import Iter "mo:core/Iter";
@@ -8,7 +7,6 @@ import Time "mo:core/Time";
 import Nat32 "mo:core/Nat32";
 import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
-import Blob "mo:core/Blob";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
@@ -146,6 +144,33 @@ actor {
     receiptImage : Storage.ExternalBlob;
     notes : Text;
     institutionId : Nat;
+  };
+
+  // Helper function to initialize default institutions only if not present.
+  func ensureDefaultInstitutions() {
+    let defaultInstitutions = [
+      {
+        id = 1;
+        name = "SMP";
+        address = "Default address for SMP";
+      },
+      {
+        id = 2;
+        name = "SMA";
+        address = "Default address for SMA";
+      },
+    ];
+
+    for (defaultInstitution in defaultInstitutions.values()) {
+      switch (institutions.get(defaultInstitution.id)) {
+        case (null) {
+          institutions.add(defaultInstitution.id, defaultInstitution);
+        };
+        case (?_) {
+          // If it exists, do not overwrite.
+        };
+      };
+    };
   };
 
   // Authorization helper functions
@@ -315,27 +340,10 @@ actor {
   };
 
   public query ({ caller }) func listInstitutions() : async [Institution] {
-    assertAuthenticated(caller);
-    let profile = getUserProfileOrTrap(caller);
-
-    switch (profile.role) {
-      case (#superAdmin) {
-        // Super admin sees all institutions
-        institutions.values().toArray();
-      };
-      case (_) {
-        // Others see only their institution
-        switch (profile.institutionId) {
-          case (null) { [] };
-          case (?instId) {
-            switch (institutions.get(instId)) {
-              case (null) { [] };
-              case (?inst) { [inst] };
-            };
-          };
-        };
-      };
-    };
+    // Must not require authentication as institution selector must work properly for not yet logged-in users and users without a user profile
+    // When the user profile is set the client will filter the institutions based on user role/institution
+    ensureDefaultInstitutions(); // This makes sure institution always shows the two default institutions
+    institutions.values().toArray();
   };
 
   // Student Management

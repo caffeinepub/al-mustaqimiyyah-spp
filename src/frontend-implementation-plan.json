@@ -1,481 +1,143 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Al-Mustaqimiyyah SPP — Frontend Admin ERP UI",
+  "title": "SPP Sekolah — Lokalisasi Bahasa Indonesia & perbaikan dropdown Lembaga",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Apply a consistent ERP-like admin theme (Navy/Emerald), responsive sidebar layout, Inter/Poppins typography, and optional dark mode toggle.",
+      "id": "REQ-16",
+      "summary": "Lokalisasi seluruh UI frontend ke Bahasa Indonesia serta format tanggal (id-ID) dan mata uang (IDR) secara konsisten.",
       "acceptanceCriteria": [
-        "App uses a consistent design system (colors, typography, spacing) with Navy/Emerald as the primary palette.",
-        "App provides a persistent sidebar navigation on desktop and a mobile-friendly navigation pattern on small screens.",
-        "Tables and forms use a clean, premium admin style with clear hierarchy.",
-        "A user-accessible toggle (or setting) enables dark mode, and all major screens remain readable in both modes."
+        "Tidak ada string UI yang terlihat pengguna masih berbahasa Inggris pada alur utama (dashboard, santri, pembayaran, laporan, pengaturan, auth/setup profil).",
+        "Toast yang sebelumnya berbahasa Inggris tampil dalam Bahasa Indonesia.",
+        "Tanggal di tabel/detail menggunakan format locale Indonesia (id-ID).",
+        "Nominal uang terformat konsisten sebagai IDR (Rp dengan pemisah ribuan Indonesia)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/utils/formatters.ts",
           "operation": "create",
-          "description": "Create global Tailwind/shadcn theme tokens and base styles for Navy/Emerald palette, typography (Inter/Poppins), card/table defaults, and dark-mode CSS variables. Ensure all user-facing UI text remains English."
-        },
-        {
-          "path": "frontend/tailwind.config.js",
-          "operation": "modify",
-          "description": "Adjust/extend theme tokens (e.g., primary/chart/sidebar vars) to reflect the Navy + Emerald Green branding and improve admin UI spacing/typography scale."
-        },
-        {
-          "path": "frontend/index.html",
-          "operation": "modify",
-          "description": "Load Inter or Poppins via a font link (or local import strategy) and ensure the document remains configured for an admin web app."
+          "description": "Tambahkan util formatter terpusat untuk tanggal dan rupiah berbasis Intl (locale id-ID) agar seluruh halaman memakai format yang konsisten."
         },
         {
           "path": "frontend/src/components/layout/AdminLayout.tsx",
-          "operation": "create",
-          "description": "Create the responsive admin shell (sidebar + top bar + content). Use shadcn-ui primitives (e.g., Sheet/DropdownMenu/Button) to implement mobile sidebar drawer and clean admin layout. Verify the component's usage instructions before implementing."
+          "operation": "modify",
+          "description": "Ubah teks navigasi/sidebar, label aplikasi, dan footer yang masih Inggris menjadi Bahasa Indonesia; pastikan tidak ada string UI Inggris tersisa pada layout."
         },
-        {
-          "path": "frontend/src/components/layout/SidebarNav.tsx",
-          "operation": "create",
-          "description": "Create a sidebar navigation component with active states, grouped items, and responsive behavior. Compose shadcn-ui components for nav styling. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/theme/ThemeToggle.tsx",
-          "operation": "create",
-          "description": "Implement a user-accessible dark mode toggle that persists preference (e.g., localStorage) and toggles Tailwind 'dark' class. Compose shadcn-ui controls for consistent UI. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "create",
-          "description": "Create the root app composition that uses AdminLayout and wires routing/navigation to all required screens, ensuring the layout is applied consistently across the admin experience."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Add Internet Identity sign-in/out, fetch caller profile/role, and enforce role-based navigation and route guards with clear unauthorized messaging.",
-      "acceptanceCriteria": [
-        "Users can sign in/out with Internet Identity.",
-        "The backend stores user profiles including role and optional institution assignment.",
-        "UI navigation and backend endpoints enforce role permissions (e.g., institution-scoped admins cannot view/edit the other institution’s students and data).",
-        "Unauthorized actions are blocked with clear English error messaging in the UI."
-      ],
-      "file_operations": [
         {
           "path": "frontend/src/components/auth/LoginButton.tsx",
-          "operation": "create",
-          "description": "Implement a Login/Logout button using the existing Internet Identity hook and clear React Query cache on logout, following the authorization component guidance. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useCurrentUser.ts",
-          "operation": "create",
-          "description": "Create React Query hooks to fetch getCallerUserProfile and getCallerUserRole, including anti-flash logic for first-time profile setup modal as recommended by the authorization component docs. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/auth/ProfileSetupModal.tsx",
-          "operation": "create",
-          "description": "Create a modal that prompts for user name on first login and saves it via saveCallerUserProfile. Use shadcn-ui Dialog/Form components for consistent UX. Verify the component's usage instructions before implementing."
+          "operation": "modify",
+          "description": "Lokalisasi label tombol login/logout serta state 'logging-in' menjadi Bahasa Indonesia, dan pastikan pesan error yang ditampilkan pengguna tidak berbahasa Inggris. (Gunakan komponen authorization untuk alur autentikasi yang sudah ada; Verify the component's usage instructions before implementing.)"
         },
         {
           "path": "frontend/src/components/auth/RequireAuth.tsx",
-          "operation": "create",
-          "description": "Create an auth gate that blocks all application data screens unless authenticated (Internet Identity present), showing an English Access Denied / Please sign in screen otherwise (per authorization component guidance). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/auth/RequireRole.tsx",
-          "operation": "create",
-          "description": "Create a role guard wrapper to restrict specific screens/actions by AppRole (Super Admin, SMP Admin, SMA Admin, Treasurer) and show clear English unauthorized messages when blocked."
-        },
-        {
-          "path": "frontend/src/components/errors/InlineError.tsx",
-          "operation": "create",
-          "description": "Create a consistent inline error UI that translates authorization failures into clear English messages (e.g., 'Unauthorized: You do not have permission to perform this action.'). Compose shadcn-ui Alert components. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Wire RequireAuth, ProfileSetupModal, and RequireRole into the route structure; ensure logout clears cached app data and returns user to a signed-out state."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Support multi-institution UX (SMP/SMA) using predefined institutions, ensuring institution-scoped visibility and selection in relevant screens.",
-      "acceptanceCriteria": [
-        "Backend persists an institutions dataset containing the two institutions (at minimum: id + name + type).",
-        "Student records reference an institution id.",
-        "Institution-scoped users only see data for their institution; Super Admin can see both."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useInstitutions.ts",
-          "operation": "create",
-          "description": "Create React Query hooks to listInstitutions and getInstitution, and provide helper utilities for institution-scoped UI filtering based on the current user's profile."
+          "description": "Lokalisasi seluruh copy untuk layar/section yang memblokir akses ketika belum login (judul, deskripsi, CTA) ke Bahasa Indonesia. (Gunakan komponen authorization untuk gating akses; Verify the component's usage instructions before implementing.)"
         },
         {
-          "path": "frontend/src/components/institutions/InstitutionSelect.tsx",
-          "operation": "create",
-          "description": "Create an institution selector component (shown only where allowed) that uses backend institutions and respects user scope; compose shadcn-ui Select components. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/auth/ProfileSetupModal.tsx",
           "operation": "modify",
-          "description": "Ensure all institution-aware screens use institution scoping (auto-fixed for SMP/SMA admins; selectable for Super Admin) and do not reveal out-of-scope data in navigation or filters."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Implement Student Management CRUD with search/filtering and a student detail view including billing/payment status summary (English-only UI).",
-      "acceptanceCriteria": [
-        "Users can create, edit, view, and delete students (subject to role permissions).",
-        "Students list supports text search (e.g., by NIS/name) and filters for class, institution, and status.",
-        "Student detail page shows full profile and related billing/payment status summary.",
-        "All user-facing labels and messages in these screens are in English."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useStudents.ts",
-          "operation": "create",
-          "description": "Create React Query hooks for listStudents/getStudent/addStudent/updateStudent/updateStudentStatus/deleteStudent and client-side search/filter helpers (class/institution/status) that respect institution scope."
-        },
-        {
-          "path": "frontend/src/pages/students/StudentsListPage.tsx",
-          "operation": "create",
-          "description": "Create the students list page with English UI text, search box, filters (class, institution when allowed, status), and a premium admin table layout using shadcn-ui Table/Input/Select components. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/students/StudentDetailPage.tsx",
-          "operation": "create",
-          "description": "Create a student detail page showing the full profile and a billing/payment status summary + chronological history (using available backend data such as getStudentPaymentHistory)."
-        },
-        {
-          "path": "frontend/src/pages/students/StudentFormPage.tsx",
-          "operation": "create",
-          "description": "Create create/edit student form screens (or a shared form component) with validation and English labels; compose shadcn-ui Form components. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/students/StudentStatusBadge.tsx",
-          "operation": "create",
-          "description": "Create a status badge component for Active/Graduated and for Paid/In Arrears display states, using consistent admin styling (and red emphasis for arrears when applicable)."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register routes and navigation entries for Students list, Student create/edit, and Student detail so these screens are reachable (no orphan pages)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Add frontend-only Excel (.xlsx) import flow for students with mapping, validation, preview, and bulk creation progress + summary.",
-      "acceptanceCriteria": [
-        "User can upload an .xlsx file and see a preview table of parsed rows.",
-        "Import flow validates required fields and highlights row-level errors before submission.",
-        "Successful import creates student records in the backend in bulk (with a progress indicator and success/failure summary)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/package.json",
-          "operation": "modify",
-          "description": "Add frontend dependencies for browser-side Excel parsing (e.g., SheetJS/xlsx) needed for import preview and export generation."
-        },
-        {
-          "path": "frontend/src/utils/excel/studentsImport.ts",
-          "operation": "create",
-          "description": "Implement browser-side .xlsx parsing, required-column mapping, normalization, and row-level validation for student import (NIS, name, class, institution, guardian name/phone, status, enrollment date)."
-        },
-        {
-          "path": "frontend/src/pages/students/StudentsImportPage.tsx",
-          "operation": "create",
-          "description": "Create the Excel import UI with upload, mapping step, validation highlighting, preview table, and bulk create action with progress indicator and success/failure summary. Compose shadcn-ui steps/dialogs/tables. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useBulkStudentCreate.ts",
-          "operation": "create",
-          "description": "Add a helper hook to run bulk creation sequentially/with limited concurrency using addStudent, tracking progress and collecting per-row errors for the final summary."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire Students Import route and add navigation access for roles allowed to manage students."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Implement SPP settings management UI for monthly tuition per institution with optional per-class override and academic year selection.",
-      "acceptanceCriteria": [
-        "Users can set a default monthly amount per institution for a specified academic year.",
-        "Users can optionally set per-class monthly amounts that override the institution default.",
-        "When generating bills, the correct amount is selected based on student’s institution and (if available) class override."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useSppSettings.ts",
-          "operation": "create",
-          "description": "Create React Query hooks for listSppSettings/getSppSetting/createSppSetting/updateSppSetting/deleteSppSetting and cache invalidation for settings-related screens."
-        },
-        {
-          "path": "frontend/src/pages/settings/SppSettingsPage.tsx",
-          "operation": "create",
-          "description": "Create SPP settings admin page with institution scoping, academic year selector, and forms/tables to manage settings. Use shadcn-ui Form/Table/Card components for ERP-like UX. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire SPP Settings route and restrict it via role-based guards (e.g., admins/treasurer as required by the product rules)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "summary": "Implement billing generation UI for monthly and full academic year generation with idempotent behavior feedback and bill status visibility.",
-      "acceptanceCriteria": [
-        "An admin can generate bills for a chosen month (and year) for all eligible active students within scope.",
-        "An admin can generate bills for a full academic year in one action.",
-        "Bills are not duplicated when generation is re-run for the same month/year/student (idempotent behavior).",
-        "Bills show status (paid/unpaid) derived from payments."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/billing/BillingGenerationPage.tsx",
-          "operation": "create",
-          "description": "Create a billing generation screen with month/year pickers and an 'academic year' bulk generation action. Provide clear English success/error feedback and show a post-action summary."
-        },
-        {
-          "path": "frontend/src/components/billing/BillStatusPill.tsx",
-          "operation": "create",
-          "description": "Create a reusable bill status pill (Paid/Unpaid) for lists/details, matching the admin theme styling."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire Billing Generation route into navigation and guard it to appropriate roles."
-        }
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "summary": "Implement SPP payment workflow UI: create/edit/delete payments, receipt image upload/preview using canister blob storage, and method constraints (Cash/Transfer).",
-      "acceptanceCriteria": [
-        "Users can record a payment against a bill (or student+month mapped to the bill) and the bill status updates accordingly.",
-        "Receipt image upload works end-to-end: image is stored in canister storage and can be previewed/downloaded in the UI.",
-        "Users can edit and delete a payment (with bill status recalculated afterward).",
-        "Payment method choices are limited to Cash and Transfer."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/usePayments.ts",
-          "operation": "create",
-          "description": "Create React Query hooks for listPayments/getPayment/createPayment/updatePayment/deletePayment with cache invalidation to keep arrears/badges updated after changes."
-        },
-        {
-          "path": "frontend/src/components/payments/ReceiptImageUploader.tsx",
-          "operation": "create",
-          "description": "Implement receipt image upload using the blob-storage ExternalBlob class (fromBytes + withUploadProgress) and preview via getDirectURL. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/payments/PaymentsListPage.tsx",
-          "operation": "create",
-          "description": "Create payments list with filters (institution scope, optional student filter) and clean admin table UI with English labels; compose shadcn-ui Table/Select/Input. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/payments/PaymentFormPage.tsx",
-          "operation": "create",
-          "description": "Create payment create/edit form: select student and month, amount, payment date, method (Cash/Transfer only), receipt upload, and notes. Compose shadcn-ui Form/Select/Date UI. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/payments/PaymentDetailPage.tsx",
-          "operation": "create",
-          "description": "Create payment detail view with receipt preview/download and actions for edit/delete, showing all required fields in English."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire Payments routes (list/create/edit/detail) into navigation and protect them with role-based guards."
-        }
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "summary": "Provide browser-only receipt printing and PDF generation from payment detail.",
-      "acceptanceCriteria": [
-        "A payment detail screen offers “Print Receipt” and “Download PDF” actions.",
-        "Generated PDF includes school/institution name, student identifiers, billed month/year, amount paid, payment date, and method.",
-        "PDF generation works offline after the data is loaded (browser-side only)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/package.json",
-          "operation": "modify",
-          "description": "Add browser-side PDF generation dependencies (e.g., jsPDF and/or html2canvas) to support offline PDF creation without external services."
-        },
-        {
-          "path": "frontend/src/utils/receipts/receiptPdf.ts",
-          "operation": "create",
-          "description": "Implement a browser-only PDF generator that renders a clean, professional receipt layout including institution name, student identifiers, billed month/year, amount, payment date, and method."
-        },
-        {
-          "path": "frontend/src/components/receipts/ReceiptView.tsx",
-          "operation": "create",
-          "description": "Create a receipt view component suitable for printing and PDF rendering, with English labels and consistent typography; compose shadcn-ui Card/Typography styles. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/payments/PaymentDetailPage.tsx",
-          "operation": "modify",
-          "description": "Add “Print Receipt” (window print) and “Download PDF” actions that use ReceiptView + receiptPdf utilities and work after data is loaded."
-        }
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "summary": "Implement automatic arrears calculations and badges in UI, including outstanding totals, unpaid months count, and per-student payment history view updates after payment changes.",
-      "acceptanceCriteria": [
-        "Student list and student detail show current status (Paid/In Arrears) based on generated bills and recorded payments.",
-        "UI displays total outstanding amount and count of unpaid months per student.",
-        "Arrears status updates immediately after payments are created/edited/deleted.",
-        "Student detail includes a chronological payment/billing history."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/utils/arrears/arrears.ts",
-          "operation": "create",
-          "description": "Implement frontend arrears computation helpers (paid vs unpaid derived from available bills/payments data loaded in the UI) and formatting for outstanding totals and unpaid month counts."
-        },
-        {
-          "path": "frontend/src/pages/students/StudentsListPage.tsx",
-          "operation": "modify",
-          "description": "Add Paid/In Arrears badges (including a red badge for arrears) and show outstanding totals + unpaid month counts per student where data is available, keeping the UI fully English."
-        },
-        {
-          "path": "frontend/src/pages/students/StudentDetailPage.tsx",
-          "operation": "modify",
-          "description": "Add a chronological billing/payment history section (using getStudentPaymentHistory and related UI state) and ensure it refreshes immediately after payment mutations."
-        },
-        {
-          "path": "frontend/src/hooks/usePayments.ts",
-          "operation": "modify",
-          "description": "Ensure payment mutations invalidate relevant queries (student detail, students list, dashboard stats, reports) so arrears status updates immediately."
-        }
-      ]
-    },
-    {
-      "id": "REQ-11",
-      "summary": "Build the main dashboard with KPI tiles, charts (payments per month and SMP vs SMA comparison), and arrears notification count linking to arrears list.",
-      "acceptanceCriteria": [
-        "Dashboard shows the four KPI tiles with correct numbers based on stored data and the current month context.",
-        "Payments-per-month chart renders for a selected period (e.g., current academic year or last 12 months).",
-        "SMP vs SMA comparison chart shows meaningful totals (e.g., payments or students) with clear labels.",
-        "Dashboard includes a visible count of students currently in arrears, with a link to the arrears list."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/package.json",
-          "operation": "modify",
-          "description": "Add a charting dependency (e.g., Recharts) to render dashboard charts in the browser."
-        },
-        {
-          "path": "frontend/src/hooks/useDashboard.ts",
-          "operation": "create",
-          "description": "Create a hook to fetch getDashboardStats and provide derived values needed by KPI tiles and chart inputs, respecting institution scope."
+          "description": "Lokalisasi judul, deskripsi, label form, placeholder, validasi, tombol, dan toast sukses/gagal menjadi Bahasa Indonesia; pastikan tidak ada string Inggris tersisa. (Gunakan komponen authorization untuk alur setup profil; Verify the component's usage instructions before implementing.)"
         },
         {
           "path": "frontend/src/pages/dashboard/DashboardPage.tsx",
-          "operation": "create",
-          "description": "Create the dashboard page with KPI tiles, charts (payments per month + SMP vs SMA comparison), and an arrears notification count linking to the arrears report/list. Use shadcn-ui Card components for ERP-like tiles. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Wire the Dashboard route as the default authenticated landing screen and ensure the sidebar includes a Dashboard nav item."
-        }
-      ]
-    },
-    {
-      "id": "REQ-12",
-      "summary": "Implement a monthly payment calendar view with green/red day intensity and clickable dates to list payments for that date.",
-      "acceptanceCriteria": [
-        "Calendar renders a month grid with per-day coloring derived from stored payment and arrears data.",
-        "Clicking a date opens a panel/page listing payments (student + amount + method) recorded on that date.",
-        "Calendar supports switching months."
-      ],
-      "file_operations": [
+          "description": "Lokalisasi judul, deskripsi, kartu statistik, label chart, dan CTA ke Bahasa Indonesia; ubah format bulan/tanggal chart menjadi id-ID dan rapikan tampilan nominal dengan formatter Rupiah dari utils."
+        },
         {
-          "path": "frontend/package.json",
+          "path": "frontend/src/pages/students/StudentsListPage.tsx",
           "operation": "modify",
-          "description": "Add date utilities dependency (e.g., date-fns) if needed for calendar computations and formatting."
+          "description": "Lokalisasi judul, deskripsi, tombol, placeholder pencarian, empty/loading states, badge status (Active/Graduated), dialog konfirmasi, serta toast menjadi Bahasa Indonesia."
         },
         {
-          "path": "frontend/src/pages/calendar/PaymentCalendarPage.tsx",
-          "operation": "create",
-          "description": "Create a monthly calendar grid UI with day coloring based on computed payment volume vs arrears and month switching controls. Compose shadcn-ui Popover/Drawer components for date details. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/calendar/DayPaymentsPanel.tsx",
-          "operation": "create",
-          "description": "Create a panel/modal to show the list of students who paid on the selected date (student, amount, method) with English labels."
-        },
-        {
-          "path": "frontend/src/utils/calendar/paymentCalendar.ts",
-          "operation": "create",
-          "description": "Implement frontend helpers to aggregate payments by day and compute color-coding thresholds for the calendar UI."
-        },
-        {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/pages/students/StudentFormPage.tsx",
           "operation": "modify",
-          "description": "Wire Payment Calendar route and add a navigation entry, with role-based access as appropriate."
-        }
-      ]
-    },
-    {
-      "id": "REQ-13",
-      "summary": "Implement Reports & Recap screens (monthly, by class, by institution, arrears list) with browser-only export to Excel and PDF.",
-      "acceptanceCriteria": [
-        "Each report view supports date range / month selection and (where relevant) institution/class filters based on user scope.",
-        "Excel export downloads a well-structured .xlsx file for each report type.",
-        "PDF export downloads a printable PDF with a clean, professional layout for each report type.",
-        "Exports do not rely on any external server/service."
-      ],
-      "file_operations": [
+          "description": "Lokalisasi semua label/placeholder/tombol/validasi/toast pada form tambah/ubah santri ke Bahasa Indonesia, termasuk teks tombol 'Saving/Save/Cancel' dan judul halaman."
+        },
+        {
+          "path": "frontend/src/pages/students/StudentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Lokalisasi teks loading/not-found, label detail, tombol, dan tabel riwayat pembayaran ke Bahasa Indonesia; gunakan formatter tanggal dan Rupiah untuk kolom yang relevan."
+        },
+        {
+          "path": "frontend/src/pages/payments/PaymentsListPage.tsx",
+          "operation": "modify",
+          "description": "Lokalisasi judul, deskripsi, tombol, placeholder pencarian, header tabel, dialog konfirmasi hapus, loading/empty state, serta toast; gunakan formatter id-ID untuk tanggal dan IDR untuk nominal."
+        },
+        {
+          "path": "frontend/src/pages/payments/PaymentFormPage.tsx",
+          "operation": "modify",
+          "description": "Lokalisasi seluruh label/placeholder/tombol/validasi/toast pada form pembayaran; terjemahkan metode pembayaran (Cash/Transfer) menjadi label Indonesia dan gunakan format id-ID untuk input/preview yang relevan."
+        },
+        {
+          "path": "frontend/src/pages/payments/PaymentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Lokalisasi label detail dan aksi (print/download/edit/back, dll) serta state loading/not-found; format tanggal dengan id-ID dan nominal dengan Rupiah."
+        },
         {
           "path": "frontend/src/pages/reports/ReportsIndexPage.tsx",
-          "operation": "create",
-          "description": "Create a reports hub page listing Monthly Recap, By Class, By Institution, and Arrears List report views, using English-only labels and admin card layout."
+          "operation": "modify",
+          "description": "Lokalisasi judul, deskripsi, nama kartu laporan, CTA, dan empty/placeholder text ke Bahasa Indonesia."
         },
         {
           "path": "frontend/src/pages/reports/MonthlyRecapReportPage.tsx",
-          "operation": "create",
-          "description": "Create the monthly recap report view with month/date-range selection, institution scope filtering, and export actions (Excel/PDF) fully in-browser."
+          "operation": "modify",
+          "description": "Lokalisasi copy placeholder, tombol, dan navigasi laporan bulanan ke Bahasa Indonesia."
         },
         {
           "path": "frontend/src/pages/reports/ClassRecapReportPage.tsx",
-          "operation": "create",
-          "description": "Create recap-by-class view with class filters and export to Excel/PDF in-browser; ensure filtering respects the current user's institution scope."
+          "operation": "modify",
+          "description": "Lokalisasi copy placeholder, tombol, dan navigasi rekap kelas ke Bahasa Indonesia."
         },
         {
           "path": "frontend/src/pages/reports/InstitutionRecapReportPage.tsx",
-          "operation": "create",
-          "description": "Create recap-by-institution view (primarily for Super Admin) with exports to Excel/PDF in-browser."
+          "operation": "modify",
+          "description": "Lokalisasi copy placeholder, tombol, dan navigasi rekap lembaga ke Bahasa Indonesia."
         },
         {
           "path": "frontend/src/pages/reports/ArrearsReportPage.tsx",
-          "operation": "create",
-          "description": "Create an arrears list report with a clear red arrears indicator and export to Excel/PDF in-browser; include a route target for the dashboard arrears link."
-        },
-        {
-          "path": "frontend/src/utils/exports/exportExcel.ts",
-          "operation": "create",
-          "description": "Implement generic browser-side Excel export utilities used by all report screens (no external services)."
-        },
-        {
-          "path": "frontend/src/utils/exports/exportPdf.ts",
-          "operation": "create",
-          "description": "Implement generic browser-side PDF export utilities used by all report screens (no external services)."
-        },
-        {
-          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Wire all report routes, add sidebar navigation entry for Reports, and ensure report screens are guarded and scoped by role/institution."
+          "description": "Lokalisasi copy placeholder, tombol, dan navigasi laporan tunggakan ke Bahasa Indonesia."
+        },
+        {
+          "path": "frontend/src/pages/settings/SppSettingsPage.tsx",
+          "operation": "modify",
+          "description": "Lokalisasi judul, deskripsi, placeholder/empty state, dan tombol pada halaman pengaturan SPP ke Bahasa Indonesia."
+        },
+        {
+          "path": "frontend/src/pages/calendar/PaymentCalendarPage.tsx",
+          "operation": "modify",
+          "description": "Lokalisasi copy placeholder kalender pembayaran ke Bahasa Indonesia."
+        }
+      ]
+    },
+    {
+      "id": "REQ-17",
+      "summary": "Pastikan seluruh dropdown/filter Lembaga memuat dan menampilkan lembaga (SMP & SMA) dengan state loading/error/empty yang jelas dan tidak pernah terlihat kosong tanpa konteks.",
+      "acceptanceCriteria": [
+        "Di ProfileSetupModal, select Lembaga menampilkan dua opsi setelah loaded; saat loading tampil state loading Bahasa Indonesia; saat error tampil state error Bahasa Indonesia.",
+        "Di StudentFormPage mode create, select Lembaga menampilkan opsi lembaga setelah loaded (atau lembaga ter-scope bila berlaku) dengan placeholder Bahasa Indonesia yang jelas.",
+        "Jika listInstitutions mengembalikan array kosong, UI menampilkan penjelasan Bahasa Indonesia (bukan dropdown kosong tanpa konteks)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Perkaya hook useListInstitutions agar komponen pemakai dapat mengakses state isLoading/isError/error dengan jelas dan dapat mengatur UX (loading/error/empty) tanpa dropdown tampak kosong."
+        },
+        {
+          "path": "frontend/src/components/auth/ProfileSetupModal.tsx",
+          "operation": "modify",
+          "description": "Perbaiki UI Select Lembaga: tampilkan placeholder 'Memuat data lembaga…' saat loading, tampilkan pesan error Indonesia saat gagal, dan tampilkan penjelasan saat hasil kosong; tetap tampilkan dua opsi lembaga bila tersedia. (Gunakan komponen authorization untuk alur setup profil; Verify the component's usage instructions before implementing.)"
+        },
+        {
+          "path": "frontend/src/pages/students/StudentFormPage.tsx",
+          "operation": "modify",
+          "description": "Perbaiki Select Lembaga pada mode create: gunakan state dari useListInstitutions untuk menampilkan loading/error/empty messages dalam Bahasa Indonesia, dan pastikan placeholder tidak membingungkan ketika data belum tersedia."
+        },
+        {
+          "path": "frontend/src/pages/payments/PaymentFormPage.tsx",
+          "operation": "modify",
+          "description": "Pastikan Select Lembaga pada form pembayaran (mode create) menangani loading/error/empty dengan teks Bahasa Indonesia sehingga tidak tampak kosong tanpa konteks, sekaligus tetap menampilkan opsi lembaga ketika data sudah tersedia."
         }
       ]
     }

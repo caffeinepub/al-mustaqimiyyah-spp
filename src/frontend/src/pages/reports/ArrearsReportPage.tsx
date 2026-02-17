@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, FileSpreadsheet } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, Download, Printer } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 
 export default function ArrearsReportPage() {
@@ -14,29 +14,29 @@ export default function ArrearsReportPage() {
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Arrears Report</h1>
-                        <p className="text-muted-foreground">Students with outstanding payments</p>
+                        <h1 className="text-3xl font-bold tracking-tight">Laporan Tunggakan</h1>
+                        <p className="text-muted-foreground">Daftar santri yang menunggak pembayaran</p>
                     </div>
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline">
-                        <FileSpreadsheet className="mr-2 h-4 w-4" />
-                        Export Excel
+                        <Printer className="mr-2 h-4 w-4" />
+                        Cetak
                     </Button>
                     <Button variant="outline">
                         <Download className="mr-2 h-4 w-4" />
-                        Export PDF
+                        Ekspor Excel
                     </Button>
                 </div>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Students in Arrears</CardTitle>
+                    <CardTitle>Laporan Tunggakan</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="text-center py-12 text-muted-foreground">
-                        <p>Arrears report coming soon</p>
+                        Fitur laporan tunggakan akan segera tersedia
                     </div>
                 </CardContent>
             </Card>

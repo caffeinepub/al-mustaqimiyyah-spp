@@ -7,55 +7,51 @@ export default function ReportsIndexPage() {
 
     const reports = [
         {
-            title: 'Monthly Recap',
-            description: 'View payment summary by month',
+            title: 'Rekap Bulanan',
+            description: 'Laporan pembayaran per bulan',
             icon: Calendar,
-            path: '/reports/monthly',
+            href: '/reports/monthly',
         },
         {
-            title: 'Class Recap',
-            description: 'View payment summary by class',
+            title: 'Rekap Per Kelas',
+            description: 'Laporan pembayaran per kelas',
             icon: Users,
-            path: '/reports/class',
+            href: '/reports/class',
         },
         {
-            title: 'Institution Recap',
-            description: 'Compare SMP and SMA payments',
+            title: 'Rekap Per Lembaga',
+            description: 'Perbandingan pembayaran antar lembaga',
             icon: FileText,
-            path: '/reports/institution',
+            href: '/reports/institution',
         },
         {
-            title: 'Arrears Report',
-            description: 'View students with outstanding payments',
+            title: 'Laporan Tunggakan',
+            description: 'Daftar santri yang menunggak pembayaran',
             icon: AlertCircle,
-            path: '/reports/arrears',
+            href: '/reports/arrears',
         },
     ];
 
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Reports</h1>
-                <p className="text-muted-foreground">Generate and export payment reports</p>
+                <h1 className="text-3xl font-bold tracking-tight">Laporan</h1>
+                <p className="text-muted-foreground">Akses berbagai laporan dan analisis pembayaran SPP</p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {reports.map((report) => (
                     <Card
-                        key={report.path}
+                        key={report.href}
                         className="cursor-pointer transition-colors hover:bg-muted/50"
-                        onClick={() => navigate({ to: report.path })}
+                        onClick={() => navigate({ to: report.href })}
                     >
                         <CardHeader>
-                            <div className="flex items-center gap-4">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                                    <report.icon className="h-6 w-6 text-primary" />
-                                </div>
-                                <div>
-                                    <CardTitle>{report.title}</CardTitle>
-                                    <CardDescription>{report.description}</CardDescription>
-                                </div>
+                            <div className="flex items-center gap-2">
+                                <report.icon className="h-5 w-5 text-primary" />
+                                <CardTitle className="text-lg">{report.title}</CardTitle>
                             </div>
+                            <CardDescription>{report.description}</CardDescription>
                         </CardHeader>
                     </Card>
                 ))}

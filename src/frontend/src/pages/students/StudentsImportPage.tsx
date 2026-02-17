@@ -1,9 +1,7 @@
-import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Upload } from 'lucide-react';
-import { toast } from 'sonner';
+import { useNavigate } from '@tanstack/react-router';
 
 export default function StudentsImportPage() {
     const navigate = useNavigate();
@@ -15,20 +13,19 @@ export default function StudentsImportPage() {
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Import Students</h1>
-                    <p className="text-muted-foreground">Upload Excel file to import student records</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Impor Data Santri</h1>
+                    <p className="text-muted-foreground">Impor data santri dari file Excel</p>
                 </div>
             </div>
 
             <Card className="max-w-2xl">
                 <CardHeader>
-                    <CardTitle>Excel Import</CardTitle>
+                    <CardTitle>Unggah File Excel</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="text-center py-12 text-muted-foreground">
-                        <Upload className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                        <p>Excel import feature coming soon</p>
-                        <p className="text-sm mt-2">This feature will allow bulk student import from Excel files</p>
+                        <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                        <p>Fitur impor Excel akan segera tersedia</p>
                     </div>
                 </CardContent>
             </Card>
