@@ -1,0 +1,182 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-17T00:04:47.587Z",
+  "summary": "The diff adds a new Motoko backend actor skeleton plus a React admin UI shell (sidebar layout, theme/dark-mode toggle, auth gating) and initial pages/hooks. However, many core requested workflows are missing or only stubbed (calendar/reports), and several data models/fields do not match the BuildRequest (institutions, student institution linkage, SPP settings, billing/bills, arrears, receipts, PDF/Excel export).",
+  "missing_requirements": [
+    {
+      "id": "REQ-2",
+      "requirement": "Role-based authorization enforcing Super Admin, SMP Admin, SMA Admin, Treasurer with institution-scoped restrictions in both UI navigation and backend endpoints, including clear English unauthorized messaging.",
+      "reason": "While Internet Identity login gating and a profile setup modal exist, the diff does not show role/institution-based access enforcement on backend methods or UI route/menu restriction logic.",
+      "evidence": [
+        "frontend/src/components/auth/RequireAuth.tsx",
+        "frontend/src/components/auth/ProfileSetupModal.tsx",
+        "frontend/src/components/layout/AdminLayout.tsx",
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "requirement": "Persist two predefined institutions (with id+name+type) and ensure each student links to exactly one institution by institution id; institution-scoped users only see their institution data.",
+      "reason": "Backend institutions are initialized as an empty map with no predefined dataset. Institution model lacks the required \"type\" field, and Student stores an Institution object rather than an institution id.",
+      "evidence": [
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Complete Student Management CRUD with required fields and search/filtering by class, institution, and status; student detail must show billing/payment status summary.",
+      "reason": "Hooks show partial student CRUD but do not show required fields matching the spec (e.g., enrollment date/status/institution id linkage as specified) nor evidence of list filtering/search UI and student detail billing/payment summary.",
+      "evidence": [
+        "frontend/src/hooks/useQueries.ts (truncated)",
+        "frontend/src/App.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "requirement": "Frontend-only Excel (.xlsx) import for students with column mapping, validation, preview, and bulk create with progress + summary.",
+      "reason": "A route/page for student import exists, but no Excel parsing/mapping/validation/preview/bulk progress implementation is shown in the diff summary.",
+      "evidence": [
+        "frontend/src/App.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "requirement": "SPP settings management: monthly tuition per institution tied to academic year, with optional per-class overrides used during bill generation.",
+      "reason": "Backend SppSetting type does not reflect academic year or per-class overrides and includes unrelated fields (paymentMethod, receiptImage). No frontend implementation details for managing these settings are shown.",
+      "evidence": [
+        "backend/main.mo (truncated)",
+        "frontend/src/App.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "requirement": "Billing generation for month/year or entire academic year; idempotent bill generation; bills track month, year, amount, paid/unpaid derived from payments.",
+      "reason": "No Bill data model, persistence, or generation methods are shown in the backend diff. UI routes/pages exist for payments, but no bill generation workflows are evidenced.",
+      "evidence": [
+        "backend/main.mo (truncated)",
+        "frontend/src/App.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "requirement": "SPP payment workflow tied to bills (or student+month): select student and month, amount, date, method (Cash/Transfer), upload receipt image stored in canister, notes; edit and delete with bill status recalculation.",
+      "reason": "Payment form uses an empty receipt blob and does not show any receipt upload UI. No linkage to a bill/month-year model is shown (uses a free-text \"brand\"). No evidence of bill status recalculation exists.",
+      "evidence": [
+        "frontend/src/pages/payments/PaymentFormPage.tsx (truncated)",
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "requirement": "Receipt output: printable receipt view and browser-side PDF generation with required fields.",
+      "reason": "Payment detail shows a Print button (window.print) and a Download PDF button, but there is no implementation for generating/downloading a PDF in the browser.",
+      "evidence": [
+        "frontend/src/pages/payments/PaymentDetailPage.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "requirement": "Automatic arrears calculations (paid vs unpaid, outstanding amount, unpaid months), badges, and per-student payment/billing history that updates after payment changes.",
+      "reason": "No bills/arrears computation models or UI elements are shown. Reports and calendar arrears-based functionality are stubbed/absent.",
+      "evidence": [
+        "backend/main.mo (truncated)",
+        "frontend/src/pages/reports/ArrearsReportPage.tsx",
+        "frontend/src/pages/calendar/PaymentCalendarPage.tsx"
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "requirement": "Dashboard KPIs (SMP students, SMA students, payments this month, arrears this month) plus charts and arrears notification/link.",
+      "reason": "Dashboard UI and charts exist, but the diff does not show arrears KPI computation nor a link/notification count for students in arrears; backend support for arrears is not evidenced.",
+      "evidence": [
+        "frontend/src/pages/dashboard/DashboardPage.tsx (truncated)",
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "requirement": "Monthly payment calendar view with day color-coding (payments vs arrears) and click-to-view payments by date; month switching.",
+      "reason": "Calendar page explicitly shows a placeholder \"coming soon\" and contains no calendar grid, coloring logic, date click drill-down, or month navigation.",
+      "evidence": [
+        "frontend/src/pages/calendar/PaymentCalendarPage.tsx"
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "requirement": "Reports & Recap screens (monthly, by class, by institution, arrears list) with browser-side Excel/PDF export.",
+      "reason": "Report pages are present but show \"coming soon\" placeholders; export buttons have no implementation evidenced for generating Excel/PDF in the browser.",
+      "evidence": [
+        "frontend/src/pages/reports/ArrearsReportPage.tsx",
+        "frontend/src/pages/reports/ClassRecapReportPage.tsx",
+        "frontend/src/App.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "requirement": "Backend data models/persistence in a single Motoko actor for institutions, students, SPP settings, bills, payments, users with stable storage, required query/update methods, access control, and receipt blob validation/retrieval.",
+      "reason": "The backend shows in-memory Maps and blob-storage mixin usage, but the diff does not evidence stable storage persistence, a Bill model, complete method surface for required workflows, or receipt validation/retrieval methods. Institution dataset is not prepopulated and models do not match required fields.",
+      "evidence": [
+        "backend/main.mo (truncated)"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Secret-token-based access control initialization from a URL parameter (\"caffeineAdminToken\") and backend method _initializeAccessControlWithSecret usage.",
+      "reason": "The BuildRequest specifies Internet Identity + role-based authorization; it does not request a separate secret-token bootstrap mechanism via URL parameter.",
+      "evidence": [
+        "frontend/src/hooks/useActor.ts",
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "description": "Non-requested/extra domain fields and naming that deviate from the specified models (e.g., Student.noInduk, Payment.brand, SppSetting containing receiptImage/paymentMethod/notes; Institution.address; Indonesian status/tag enums).",
+      "reason": "The BuildRequest defines specific fields (student fields, SPP settings academic year + per-class overrides, bills month/year). The diff introduces additional or mismatched fields and terminology not requested.",
+      "evidence": [
+        "backend/main.mo (truncated)",
+        "frontend/src/hooks/useQueries.ts (truncated)",
+        "frontend/src/pages/payments/PaymentFormPage.tsx (truncated)",
+        "frontend/src/pages/payments/PaymentDetailPage.tsx (truncated)"
+      ]
+    }
+  ],
+  "confidence": 0.74,
+  "changed_files": [
+    "all_files_summary.json",
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/src/App.tsx",
+    "frontend/src/components/auth/LoginButton.tsx",
+    "frontend/src/components/auth/ProfileSetupModal.tsx",
+    "frontend/src/components/auth/RequireAuth.tsx",
+    "frontend/src/components/layout/AdminLayout.tsx",
+    "frontend/src/components/theme/ThemeToggle.tsx",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useCurrentUser.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/main.tsx",
+    "frontend/src/pages/calendar/PaymentCalendarPage.tsx",
+    "frontend/src/pages/dashboard/DashboardPage.tsx",
+    "frontend/src/pages/payments/PaymentDetailPage.tsx",
+    "frontend/src/pages/payments/PaymentFormPage.tsx",
+    "frontend/src/pages/payments/PaymentsListPage.tsx",
+    "frontend/src/pages/reports/ArrearsReportPage.tsx",
+    "frontend/src/pages/reports/ClassRecapReportPage.tsx",
+    "frontend/src/pages/reports/InstitutionRecapReportPage.tsx",
+    "frontend/src/pages/reports/MonthlyRecapReportPage.tsx",
+    "frontend/src/pages/reports/ReportsIndexPage.tsx",
+    "frontend/src/pages/settings/SppSettingsPage.tsx",
+    "frontend/src/pages/students/StudentDetailPage.tsx",
+    "frontend/src/pages/students/StudentFormPage.tsx",
+    "frontend/src/pages/students/StudentsImportPage.tsx",
+    "frontend/src/pages/students/StudentsListPage.tsx",
+    "frontend/src/utils/urlParams.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Web app Sistem Manajemen Pembayaran SPP Sekolah (multi-lembaga SMP/SMA) dengan UI modern ERP-like, dashboard statistik, manajemen siswa, tagihan bulanan/tahun ajaran, pembayaran + upload bukti, tunggakan otomatis, kalender, laporan ekspor, serta role-based access. Disetujui menggunakan stack Caffeine: Backend Motoko + Frontend React+TypeScript + penyimpanan data/file di canister, impor/ekspor Excel/PDF dilakukan di sisi frontend (browser).",
+  "architectural_notes": [
+    "Stack disetujui: Backend Motoko (Internet Computer) + Frontend React + TypeScript; data disimpan di canister (bukan PostgreSQL/Prisma/Express).",
+    "Upload bukti pembayaran (gambar) disimpan di canister.",
+    "Import/Export Excel & PDF disetujui dilakukan sepenuhnya di sisi frontend (browser) tanpa server eksternal.",
+    "Autentikasi berbasis JWT diminta dalam spesifikasi awal; perlu pemetaan implementasi ke mekanisme auth yang sesuai di stack IC/Caffeine."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-implement-a-modern-professional-erp-like-admin-ui-theme-across-the-app-primary-colors-navy-emerald-green-clean-cards-and-tables-sidebar-navigation-responsive-layout-desktop-mobile-admin-modern-font-inter-or-poppins-and-optional-dark-mode",
+      "title": "Implement a modern, professional ERP-like admin UI theme across the app: primary colors Navy + Emerald Green, clean cards and tables, sidebar navigation, responsive layout (desktop + mobile admin), modern font (Inter or Poppins), and optional dark mode.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-authentication-and-role-based-authorization-using-internet-identity-supporting-the-roles-super-admin-smp-admin-sma-admin-and-treasurer-each-with-appropriate-access-restrictions-including-institution-scoped-access-where-applicable",
+      "title": "Add authentication and role-based authorization using Internet Identity, supporting the roles: Super Admin, SMP Admin, SMA Admin, and Treasurer, each with appropriate access restrictions (including institution-scoped access where applicable).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-multi-institution-management-with-two-predefined-institutions-smp-it-tahfidhil-qur-an-al-mustaqimiyyah-and-sma-tahfidhil-qur-an-al-mustaqimiyyah-and-ensure-each-student-record-is-linked-to-exactly-one-institution",
+      "title": "Implement multi-institution management with two predefined institutions: “SMP IT TAHFIDHIL QUR'AN AL-MUSTAQIMIYYAH” and “SMA TAHFIDHIL QUR'AN AL-MUSTAQIMIYYAH”, and ensure each student record is linked to exactly one institution.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-student-management-crud-with-fields-nis-full-name-class-institution-smp-sma-guardian-name-guardian-phone-status-active-graduated-and-enrollment-date-include-search-and-filtering-by-class-institution-and-status",
+      "title": "Implement Student Management (CRUD) with fields: NIS, full name, class, institution (SMP/SMA), guardian name, guardian phone, status (active/graduated), and enrollment date; include search and filtering by class, institution, and status.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-frontend-only-excel-import-for-students-users-can-upload-an-excel-file-map-validate-required-columns-nis-name-class-institution-guardian-name-phone-status-enrollment-date-preview-the-import-and-then-create-student-records-in-bulk",
+      "title": "Add frontend-only Excel import for students: users can upload an Excel file, map/validate required columns (NIS, name, class, institution, guardian name/phone, status, enrollment date), preview the import, and then create student records in bulk.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-spp-settings-management-define-monthly-tuition-amount-per-institution-with-optional-overrides-per-class-tied-to-an-academic-year",
+      "title": "Implement SPP settings management: define monthly tuition amount per institution, with optional overrides per class, tied to an academic year.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-billing-generation-automatically-generate-monthly-bills-and-allow-generating-bills-for-an-entire-academic-year-at-once-bills-must-track-month-year-amount-and-paid-unpaid-status-per-student",
+      "title": "Implement billing generation: automatically generate monthly bills, and allow generating bills for an entire academic year at once; bills must track month, year, amount, and paid/unpaid status per student.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-spp-payment-workflow-payment-form-supports-selecting-student-and-month-entering-amount-paid-payment-date-payment-method-cash-transfer-uploading-a-receipt-image-and-adding-notes-allow-editing-and-deleting-payments",
+      "title": "Implement SPP payment workflow: payment form supports selecting student and month, entering amount paid, payment date, payment method (Cash/Transfer), uploading a receipt image, and adding notes; allow editing and deleting payments.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-provide-receipt-output-enable-printing-a-receipt-view-and-generating-a-pdf-proof-of-payment-entirely-in-the-browser-no-external-services",
+      "title": "Provide receipt output: enable printing a receipt view and generating a PDF proof of payment entirely in the browser (no external services).",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-automatic-arrears-tunggakan-calculations-compute-paid-vs-unpaid-per-student-total-outstanding-amount-number-of-overdue-unpaid-months-show-clear-paid-arrears-badges-including-a-red-badge-for-arrears-and-provide-per-student-payment-history-views",
+      "title": "Implement automatic arrears (tunggakan) calculations: compute paid vs unpaid per student, total outstanding amount, number of overdue/unpaid months, show clear paid/arrears badges (including a red badge for arrears), and provide per-student payment history views.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-the-main-dashboard-with-total-smp-students-total-sma-students-total-payments-this-month-total-arrears-this-month-include-charts-for-payments-per-month-and-smp-vs-sma-comparison-show-a-notification-count-for-students-in-arrears",
+      "title": "Build the main dashboard with: total SMP students, total SMA students, total payments this month, total arrears this month; include charts for payments per month and SMP vs SMA comparison; show a notification count for students in arrears.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-monthly-payment-calendar-view-color-code-days-based-on-volume-of-payments-vs-arrears-green-for-many-payments-red-for-many-arrears-and-allow-clicking-a-date-to-view-the-list-of-students-who-paid-on-that-date",
+      "title": "Implement a monthly payment calendar view: color-code days based on volume of payments vs arrears (green for many payments, red for many arrears) and allow clicking a date to view the list of students who paid on that date.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-reports-recap-screens-monthly-recap-recap-by-class-recap-by-institution-and-a-list-of-students-in-arrears-enable-export-to-excel-and-pdf-entirely-in-the-browser",
+      "title": "Implement Reports & Recap screens: monthly recap, recap by class, recap by institution, and a list of students in arrears; enable export to Excel and PDF entirely in the browser.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "UI/Design modern ERP sekolah: navy+emerald, clean cards/tables, sidebar, responsive, font Inter/Poppins, dark mode opsional, dashboard visual",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Dashboard utama: total siswa SMP/SMA, total pembayaran & tunggakan bulan ini, grafik pembayaran per bulan & perbandingan SMP vs SMA, notifikasi siswa menunggak",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Manajemen lembaga multi-institution (SMP & SMA) dan relasi siswa ke lembaga",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "CRUD & pencarian data siswa + import Excel + filter kelas/lembaga + status aktif/lulus",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Sistem tagihan SPP: setting nominal per lembaga (opsional per kelas), generate tagihan otomatis bulanan & 1 tahun ajaran",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Pembayaran SPP: form pembayaran (bulan, nominal, tanggal, metode cash/transfer), upload bukti, catatan, edit/hapus, cetak kwitansi & PDF bukti bayar",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Tunggakan otomatis: status lunas/menunggak, hitung total & jumlah bulan tertunggak, badge merah, riwayat pembayaran per siswa",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Kalender pembayaran bulanan dengan heatmap/warna (hijau banyak bayar, merah banyak tunggakan) dan daftar pembayaran per tanggal",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Laporan & rekap: per bulan/kelas/lembaga + daftar siswa menunggak + export PDF/Excel",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Role & user management: Admin Utama, Admin SMP, Admin SMA, Bendahara dengan hak akses berbeda",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Design and implement backend data models and persistence in a single Motoko actor for: institutions, students, SPP settings, bills, payments, and users; include query/update methods needed by the frontend, with role/institution access checks in backend methods.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Al-Mustaqimiyyah SPP",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

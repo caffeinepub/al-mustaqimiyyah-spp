@@ -1,2 +1,3 @@
-# al-mustaqimiyyah-spp
-Exported from Caffeine project: Al-Mustaqimiyyah SPP
+## Al-Mustaqimiyyah SPP
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

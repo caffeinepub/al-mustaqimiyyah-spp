@@ -1,0 +1,302 @@
+{
+  "kind": "build_request",
+  "title": "School Tuition (SPP) Payment Management System (Multi-Institution SMP/SMA)",
+  "projectName": "Al-Mustaqimiyyah SPP",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Implement a modern, professional ERP-like admin UI theme across the app: primary colors Navy + Emerald Green, clean cards and tables, sidebar navigation, responsive layout (desktop + mobile admin), modern font (Inter or Poppins), and optional dark mode.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2",
+          "msg-4"
+        ],
+        "quotes": [
+          "🎨 DESIGN & UI\nTampilan modern seperti sistem ERP sekolah\nWarna utama: Navy + Emerald Green\nClean layout dengan card dan table profesional\nSidebar navigation\nResponsive (desktop & mobile admin)\nFont modern (Inter / Poppins)\nDark mode optional"
+        ]
+      },
+      "acceptanceCriteria": [
+        "App uses a consistent design system (colors, typography, spacing) with Navy/Emerald as the primary palette.",
+        "App provides a persistent sidebar navigation on desktop and a mobile-friendly navigation pattern on small screens.",
+        "Tables and forms use a clean, premium admin style with clear hierarchy.",
+        "A user-accessible toggle (or setting) enables dark mode, and all major screens remain readable in both modes."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add authentication and role-based authorization using Internet Identity, supporting the roles: Super Admin, SMP Admin, SMA Admin, and Treasurer, each with appropriate access restrictions (including institution-scoped access where applicable).",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "9️⃣ Role & User Management\nRole:\nAdmin Utama\nAdmin SMP\nAdmin SMA\nBendahara\nHak akses berbeda tiap role."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can sign in/out with Internet Identity.",
+        "The backend stores user profiles including role and optional institution assignment.",
+        "UI navigation and backend endpoints enforce role permissions (e.g., institution-scoped admins cannot view/edit the other institution’s students and data).",
+        "Unauthorized actions are blocked with clear English error messaging in the UI."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Implement multi-institution management with two predefined institutions: “SMP IT TAHFIDHIL QUR'AN AL-MUSTAQIMIYYAH” and “SMA TAHFIDHIL QUR'AN AL-MUSTAQIMIYYAH”, and ensure each student record is linked to exactly one institution.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "2️⃣ Manajemen Lembaga\nBuat sistem multi-lembaga:\nSMP IT TAHFIDHIL QUR'AN AL-MUSTAQIMIYYAH\nSMA TAHFIDHIL QUR'AN AL-MUSTAQIMIYYAH\nSetiap siswa harus terhubung ke lembaganya."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend persists an institutions dataset containing the two institutions (at minimum: id + name + type).",
+        "Student records reference an institution id.",
+        "Institution-scoped users only see data for their institution; Super Admin can see both."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Implement Student Management (CRUD) with fields: NIS, full name, class, institution (SMP/SMA), guardian name, guardian phone, status (active/graduated), and enrollment date; include search and filtering by class, institution, and status.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "3️⃣ Data Siswa\nField data siswa:\nNIS\nNama lengkap\nKelas\nLembaga (SMP / SMA)\nNama wali\nNomor HP wali\nStatus aktif / lulus\nTanggal masuk\nFitur:\nTambah siswa\nEdit siswa\nHapus siswa\nSearch siswa\nFilter berdasarkan kelas & lembaga"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can create, edit, view, and delete students (subject to role permissions).",
+        "Students list supports text search (e.g., by NIS/name) and filters for class, institution, and status.",
+        "Student detail page shows full profile and related billing/payment status summary.",
+        "All user-facing labels and messages in these screens are in English."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Add frontend-only Excel import for students: users can upload an Excel file, map/validate required columns (NIS, name, class, institution, guardian name/phone, status, enrollment date), preview the import, and then create student records in bulk.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2",
+          "msg-3",
+          "msg-4"
+        ],
+        "quotes": [
+          "Import data siswa via Excel",
+          "3. boleh bro silahkan"
+        ]
+      },
+      "acceptanceCriteria": [
+        "User can upload an .xlsx file and see a preview table of parsed rows.",
+        "Import flow validates required fields and highlights row-level errors before submission.",
+        "Successful import creates student records in the backend in bulk (with a progress indicator and success/failure summary)."
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Implement SPP settings management: define monthly tuition amount per institution, with optional overrides per class, tied to an academic year.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "4️⃣ Sistem Tagihan SPP\nSistem harus bisa:\nMenentukan nominal SPP per lembaga\nBisa beda nominal tiap kelas (opsional)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can set a default monthly amount per institution for a specified academic year.",
+        "Users can optionally set per-class monthly amounts that override the institution default.",
+        "When generating bills, the correct amount is selected based on student’s institution and (if available) class override."
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Implement billing generation: automatically generate monthly bills, and allow generating bills for an entire academic year at once; bills must track month, year, amount, and paid/unpaid status per student.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "Otomatis generate tagihan setiap bulan\nGenerate tagihan 1 tahun ajaran sekaligus"
+        ]
+      },
+      "acceptanceCriteria": [
+        "An admin can generate bills for a chosen month (and year) for all eligible active students within scope.",
+        "An admin can generate bills for a full academic year in one action.",
+        "Bills are not duplicated when generation is re-run for the same month/year/student (idempotent behavior).",
+        "Bills show status (paid/unpaid) derived from payments."
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "text": "Implement SPP payment workflow: payment form supports selecting student and month, entering amount paid, payment date, payment method (Cash/Transfer), uploading a receipt image, and adding notes; allow editing and deleting payments.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2",
+          "msg-3",
+          "msg-4"
+        ],
+        "quotes": [
+          "5️⃣ Pembayaran SPP\nForm pembayaran:\nPilih siswa\nPilih bulan\nNominal bayar\nTanggal bayar\nMetode pembayaran (Cash / Transfer)\nUpload bukti pembayaran (gambar)\nKeterangan\nFitur tambahan:\nEdit & hapus pembayaran",
+          "2. tetap bro silahkan"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can record a payment against a bill (or student+month mapped to the bill) and the bill status updates accordingly.",
+        "Receipt image upload works end-to-end: image is stored in canister storage and can be previewed/downloaded in the UI.",
+        "Users can edit and delete a payment (with bill status recalculated afterward).",
+        "Payment method choices are limited to Cash and Transfer."
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "text": "Provide receipt output: enable printing a receipt view and generating a PDF proof of payment entirely in the browser (no external services).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2",
+          "msg-3",
+          "msg-4"
+        ],
+        "quotes": [
+          "Cetak kwitansi\nGenerate PDF bukti pembayaran",
+          "3. boleh bro silahkan"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A payment detail screen offers “Print Receipt” and “Download PDF” actions.",
+        "Generated PDF includes school/institution name, student identifiers, billed month/year, amount paid, payment date, and method.",
+        "PDF generation works offline after the data is loaded (browser-side only)."
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "text": "Implement automatic arrears (tunggakan) calculations: compute paid vs unpaid per student, total outstanding amount, number of overdue/unpaid months, show clear paid/arrears badges (including a red badge for arrears), and provide per-student payment history views.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "6️⃣ Sistem Tunggakan Otomatis 🔥\nSistem harus otomatis:\nMenandai siswa sebagai:\n✅ Lunas\n⚠ Menunggak\nHitung total tunggakan\nMenampilkan jumlah bulan tertunggak\nTampilkan badge merah jika menunggak\nBisa lihat detail riwayat pembayaran per siswa"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Student list and student detail show current status (Paid/In Arrears) based on generated bills and recorded payments.",
+        "UI displays total outstanding amount and count of unpaid months per student.",
+        "Arrears status updates immediately after payments are created/edited/deleted.",
+        "Student detail includes a chronological payment/billing history."
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "text": "Build the main dashboard with: total SMP students, total SMA students, total payments this month, total arrears this month; include charts for payments per month and SMP vs SMA comparison; show a notification count for students in arrears.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "1️⃣ Dashboard Utama\nTampilkan:\nTotal siswa SMP\nTotal siswa SMA\nTotal pembayaran bulan ini\nTotal tunggakan bulan ini\nGrafik:\nGrafik pembayaran per bulan\nGrafik perbandingan SMP vs SMA\nNotifikasi jumlah siswa yang menunggak"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Dashboard shows the four KPI tiles with correct numbers based on stored data and the current month context.",
+        "Payments-per-month chart renders for a selected period (e.g., current academic year or last 12 months).",
+        "SMP vs SMA comparison chart shows meaningful totals (e.g., payments or students) with clear labels.",
+        "Dashboard includes a visible count of students currently in arrears, with a link to the arrears list."
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "text": "Implement a monthly payment calendar view: color-code days based on volume of payments vs arrears (green for many payments, red for many arrears) and allow clicking a date to view the list of students who paid on that date.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "7️⃣ Kalender Pembayaran\nTampilan kalender bulanan:\nTanggal pembayaran masuk\nKlik tanggal → tampil daftar siswa yang bayar\nWarna:\nHijau = banyak pembayaran\nMerah = banyak tunggakan"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Calendar renders a month grid with per-day coloring derived from stored payment and arrears data.",
+        "Clicking a date opens a panel/page listing payments (student + amount + method) recorded on that date.",
+        "Calendar supports switching months."
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "text": "Implement Reports & Recap screens: monthly recap, recap by class, recap by institution, and a list of students in arrears; enable export to Excel and PDF entirely in the browser.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2",
+          "msg-3",
+          "msg-4"
+        ],
+        "quotes": [
+          "8️⃣ Laporan & Rekap\nBuat laporan:\nRekap pembayaran per bulan\nRekap per kelas\nRekap per lembaga\nDaftar siswa menunggak\nExport ke:\nPDF\nExcel",
+          "3. boleh bro silahkan"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Each report view supports date range / month selection and (where relevant) institution/class filters based on user scope.",
+        "Excel export downloads a well-structured .xlsx file for each report type.",
+        "PDF export downloads a printable PDF with a clean, professional layout for each report type.",
+        "Exports do not rely on any external server/service."
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "text": "Design and implement backend data models and persistence in a single Motoko actor for: institutions, students, SPP settings, bills, payments, and users; include query/update methods needed by the frontend, with role/institution access checks in backend methods.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-2",
+          "msg-3",
+          "msg-4"
+        ],
+        "quotes": [
+          "Gunakan stack Caffeine (Motoko + React + penyimpanan canister).",
+          "Table: institutions ... Table: students ... Table: spp_settings ... Table: bills ... Table: payments ... Table: users ..."
+        ]
+      },
+      "acceptanceCriteria": [
+        "All core entities (institutions, students, spp settings, bills, payments, users) are persisted in canister stable storage.",
+        "Backend exposes clear methods to support all UI workflows (CRUD, generation, reporting aggregates).",
+        "Backend enforces access control based on the authenticated principal’s role and institution scope.",
+        "Receipt images are stored and retrievable from the canister with appropriate size/type validation."
+      ]
+    }
+  ],
+  "constraints": [
+    "Use Motoko in a single backend actor (no multi-service architecture).",
+    "Do not modify files in frontend immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui (compose them instead).",
+    "Store uploaded receipt images in canister storage (no external object storage).",
+    "Excel/PDF import/export must be performed entirely on the frontend (browser-side), without external services.",
+    "All user-facing UI text must be in English."
+  ],
+  "nonGoals": [
+    "Using Next.js, Node.js/Express, PostgreSQL, Prisma, JWT, or any external database (not supported on this platform).",
+    "Integrations with third-party auth providers beyond Internet Identity.",
+    "Real-time features (WebSockets/live chat/push notifications).",
+    "Public student/parent portal; this scope is for admin/staff management UI."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}
